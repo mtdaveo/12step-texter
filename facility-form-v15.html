@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>12th Step Texter — Request Form</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #1a1f1c;
+    --surface: #222720;
+    --card: #272d24;
+    --border: #333830;
+    --text: #e8e4dc;
+    --muted: #7a8275;
+    --accent: #7cb98a;
+    --accent-dark: #5a9a6a;
+    --accent-glow: rgba(124,185,138,0.12);
+    --men: #7aaccc;
+    --women: #cc7aac;
+    --danger: #cc6060;
+    --danger-light: rgba(204,96,96,0.1);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0 16px 60px;
+  }
+
+  header {
+    width: 100%;
+    max-width: 480px;
+    padding: 36px 0 28px;
+    text-align: center;
+  }
+
+  .logo-mark {
+    width: 48px;
+    height: 48px;
+    background: var(--accent);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 16px;
+    font-size: 1.4rem;
+  }
+
+  header h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.6rem;
+    font-weight: 400;
+    letter-spacing: -0.01em;
+    color: var(--text);
+    margin-bottom: 6px;
+  }
+
+  header p {
+    font-size: 0.82rem;
+    color: var(--muted);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .form-card {
+    width: 100%;
+    max-width: 480px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+
+  .gender-bar {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .gender-option {
+    padding: 20px 16px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    user-select: none;
+  }
+
+  .gender-option.male  { border-right: 1px solid var(--border); }
+  .gender-option.male:hover  { background: rgba(122,172,204,0.06); }
+  .gender-option.female:hover { background: rgba(204,122,172,0.06); }
+
+  .gender-option.male.selected {
+    background: rgba(122,172,204,0.12);
+    box-shadow: inset 0 -3px 0 var(--men);
+  }
+  .gender-option.female.selected {
+    background: rgba(204,122,172,0.12);
+    box-shadow: inset 0 -3px 0 var(--women);
+  }
+  .gender-option.male.selected .gender-label   { color: var(--men); }
+  .gender-option.female.selected .gender-label { color: var(--women); }
+
+  .gender-label {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.05rem;
+    display: block;
+    margin-bottom: 3px;
+  }
+
+  .gender-sub {
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .gender-error {
+    font-size: 0.75rem;
+    color: var(--danger);
+    text-align: center;
+    padding: 6px;
+    display: none;
+    background: var(--danger-light);
+  }
+
+  .gender-error.visible { display: block; }
+
+  .fields {
+    padding: 24px 24px 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
+
+  .field-group {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+  }
+
+  .field-label {
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .field-label .req { color: var(--accent); }
+
+  .field-input {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    padding: 12px 14px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 300;
+    color: var(--text);
+    width: 100%;
+    transition: border-color 0.15s, box-shadow 0.15s;
+  }
+
+  .field-input:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-glow);
+  }
+
+  .field-input::placeholder { color: var(--muted); opacity: 0.6; }
+
+  textarea.field-input {
+    min-height: 100px;
+    max-height: 300px;
+    resize: vertical;
+    line-height: 1.6;
+  }
+
+  .yesno {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+
+  .yesno-btn {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    padding: 11px;
+    text-align: center;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.88rem;
+    color: var(--muted);
+    transition: all 0.15s;
+  }
+
+  .yesno-btn:hover { border-color: var(--accent); color: var(--text); }
+  .yesno-btn.sel-yes { background: rgba(124,185,138,0.15); border-color: var(--accent); color: var(--accent); }
+  .yesno-btn.sel-no  { background: rgba(204,96,96,0.1);    border-color: var(--danger);  color: var(--danger); }
+
+  .field-error {
+    font-size: 0.75rem;
+    color: var(--danger);
+    display: none;
+  }
+
+  .field-group.has-error .field-error        { display: block; }
+  .field-group.has-error .field-input        { border-color: var(--danger); }
+
+  .divider { height: 1px; background: var(--border); margin: 8px 24px; }
+
+  .confirm-block {
+    margin: 8px 24px 20px;
+    background: rgba(124,185,138,0.06);
+    border: 1px solid rgba(124,185,138,0.2);
+    border-radius: 3px;
+    padding: 16px;
+  }
+
+  .confirm-block.has-error {
+    border-color: var(--danger);
+    background: var(--danger-light);
+  }
+
+  .confirm-label {
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    cursor: pointer;
+  }
+
+  .confirm-label input[type="checkbox"] {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 22px;
+    height: 22px;
+    min-width: 22px;
+    border: 2px solid var(--border);
+    border-radius: 3px;
+    background: var(--surface);
+    cursor: pointer;
+    transition: all 0.15s;
+    position: relative;
+    margin-top: 1px;
+  }
+
+  .confirm-label input[type="checkbox"]:checked {
+    background: var(--accent);
+    border-color: var(--accent);
+  }
+
+  .confirm-label input[type="checkbox"]:checked::after {
+    content: '';
+    position: absolute;
+    left: 5px; top: 2px;
+    width: 8px; height: 12px;
+    border: 2px solid white;
+    border-top: none; border-left: none;
+    transform: rotate(40deg);
+  }
+
+  .confirm-text {
+    font-size: 0.88rem;
+    line-height: 1.5;
+    color: var(--text);
+  }
+
+  .confirm-text strong {
+    display: block;
+    font-weight: 500;
+    margin-bottom: 3px;
+    color: var(--accent);
+    font-size: 0.78rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .confirm-error {
+    font-size: 0.75rem;
+    color: var(--danger);
+    margin-top: 8px;
+    display: none;
+  }
+
+  .confirm-block.has-error .confirm-error { display: block; }
+
+  .submit-area { padding: 0 24px 24px; }
+
+  .btn-submit {
+    width: 100%;
+    background: var(--accent);
+    color: #0f1a12;
+    border: none;
+    border-radius: 3px;
+    padding: 16px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+
+  .btn-submit:hover { background: var(--accent-dark); }
+
+  .send-error {
+    font-size: 0.78rem;
+    color: var(--danger);
+    text-align: center;
+    margin-top: 10px;
+    min-height: 18px;
+  }
+
+  .success-screen {
+    display: none;
+    width: 100%;
+    max-width: 480px;
+    text-align: center;
+    padding: 60px 24px;
+  }
+
+  .success-screen.visible { display: block; }
+
+  .success-icon {
+    width: 72px; height: 72px;
+    background: var(--accent);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 24px;
+    font-size: 2rem;
+  }
+
+  .success-screen h2 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.6rem;
+    font-weight: 400;
+    margin-bottom: 12px;
+  }
+
+  .success-screen p {
+    font-size: 0.9rem;
+    color: var(--muted);
+    line-height: 1.6;
+    margin-bottom: 32px;
+  }
+
+  .btn-another {
+    background: none;
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    color: var(--muted);
+    padding: 12px 28px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.88rem;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .btn-another:hover { border-color: var(--accent); color: var(--accent); }
+
+  .no-config {
+    width: 100%;
+    max-width: 480px;
+    background: var(--danger-light);
+    border: 1px solid var(--danger);
+    border-radius: 4px;
+    padding: 20px 24px;
+    font-size: 0.88rem;
+    line-height: 1.6;
+    display: none;
+  }
+
+  .no-config.visible { display: block; }
+
+  @media (max-width: 400px) {
+    .fields { padding: 16px 16px 8px; }
+    .divider { margin: 8px 16px; }
+    .confirm-block { margin: 8px 16px 16px; }
+    .submit-area { padding: 0 16px 20px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo-mark">✦</div>
+  <h1>12th Step Texter</h1>
+  <p>AA Contact Request</p>
+</header>
+
+<div class="no-config" id="no-config">
+  <strong style="color:var(--danger)">Setup required.</strong>
+  This form has not been configured. Please complete
+  <a href="coordinator-setup-v8.html" style="color:var(--accent)">Coordinator Setup</a> first.
+</div>
+
+<div class="form-card" id="form-card" style="display:none">
+
+  <!-- Gender -->
+  <div class="gender-bar">
+    <div class="gender-option male" id="opt-male" onclick="selectGender('male')">
+      <span class="gender-label">Male</span>
+      <span class="gender-sub">Men's list</span>
+    </div>
+    <div class="gender-option female" id="opt-female" onclick="selectGender('female')">
+      <span class="gender-label">Female</span>
+      <span class="gender-sub">Women's list</span>
+    </div>
+  </div>
+  <div class="gender-error" id="gender-error">Please select Male or Female.</div>
+
+  <!-- Dynamic fields -->
+  <div class="fields" id="fields-container"></div>
+
+  <div class="divider"></div>
+
+  <!-- Confirmation -->
+  <div class="confirm-block" id="confirm-block">
+    <label class="confirm-label">
+      <input type="checkbox" id="confirm-check">
+      <div class="confirm-text">
+        <strong>Required Confirmation</strong>
+        I confirm that this patient has personally requested a visit from Alcoholics Anonymous.
+      </div>
+    </label>
+    <div class="confirm-error" id="confirm-error">This confirmation is required before sending.</div>
+  </div>
+
+  <!-- Submit -->
+  <div class="submit-area">
+    <button class="btn-submit" id="btn-submit" onclick="handleSubmit()">
+      Send Request to AA Volunteers
+    </button>
+    <div class="send-error" id="send-error"></div>
+  </div>
+
+</div>
+
+<!-- Success -->
+<div class="success-screen" id="success-screen">
+  <div class="success-icon">✓</div>
+  <h2>Request Sent</h2>
+  <p>AA volunteers have been notified and will be in touch with the patient shortly.</p>
+  <button class="btn-another" onclick="resetForm()">Submit Another Request</button>
+</div>
+
+<script>
+// ── State ─────────────────────────────────────────────────────
+var config = null;
+var selectedGender = null;
+
+// ── Carrier gateway map ────────────────────────────────────────
+var GATEWAYS = {
+  'Verizon':    'vtext.com',
+  'AT&T':       'txt.att.net',
+  'T-Mobile':   'tmomail.net',
+  'Sprint':     'messaging.sprintpcs.com',
+  'US Cellular':'email.uscc.net',
+  'Cricket':    'sms.cricketwireless.net',
+  'Boost':      'sms.myboostmobile.com',
+  'Metro PCS':  'mymetropcs.com'
+};
+
+// ── Init ──────────────────────────────────────────────────────
+window.addEventListener('DOMContentLoaded', function() {
+  var raw = localStorage.getItem('12step-config');
+  if (!raw) {
+    document.getElementById('no-config').classList.add('visible');
+    return;
+  }
+  config = JSON.parse(raw);
+  document.getElementById('form-card').style.display = 'block';
+  buildFields();
+});
+
+// ── Gender ────────────────────────────────────────────────────
+function selectGender(g) {
+  selectedGender = g;
+  document.getElementById('opt-male').classList.toggle('selected', g === 'male');
+  document.getElementById('opt-female').classList.toggle('selected', g === 'female');
+  document.getElementById('gender-error').classList.remove('visible');
+}
+
+// ── Field key ─────────────────────────────────────────────────
+function toKey(label) {
+  return label.toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_|_$/g, '');
+}
+
+function fieldKey(field) {
+  return (field.key && field.key.trim()) ? field.key.trim() : toKey(field.label);
+}
+
+// ── Build form fields ─────────────────────────────────────────
+function buildFields() {
+  var container = document.getElementById('fields-container');
+  container.innerHTML = '';
+  var fields = (config && config.fields) ? config.fields : [];
+
+  if (fields.length === 0) {
+    container.innerHTML = '<p style="color:var(--danger);font-size:0.85rem;padding:4px 0">No fields configured. Please save Coordinator Setup first.</p>';
+    return;
+  }
+
+  fields.forEach(function(field) {
+    if (!field.label) return;
+    var key = fieldKey(field);
+
+    var group = document.createElement('div');
+    group.className = 'field-group';
+    group.dataset.key = key;
+
+    var lbl = document.createElement('div');
+    lbl.className = 'field-label';
+    lbl.innerHTML = field.label + (field.required ? ' <span class="req">*</span>' : '');
+
+    var input;
+
+    if (field.type === 'boolean') {
+      input = document.createElement('div');
+      input.className = 'yesno';
+      input.dataset.key = key;
+      input.dataset.fieldtype = 'boolean';
+      var yes = document.createElement('button');
+      yes.className = 'yesno-btn';
+      yes.textContent = 'Yes';
+      yes.onclick = function() { pickYesNo(key, 'Yes'); };
+      var no = document.createElement('button');
+      no.className = 'yesno-btn';
+      no.textContent = 'No';
+      no.onclick = function() { pickYesNo(key, 'No'); };
+      input.appendChild(yes);
+      input.appendChild(no);
+
+    } else if (field.type === 'multiline' || key === 'notes') {
+      input = document.createElement('textarea');
+      input.className = 'field-input';
+      input.dataset.key = key;
+      input.dataset.required = field.required ? 'true' : 'false';
+      input.placeholder = field.label;
+
+    } else if (field.type === 'number') {
+      input = document.createElement('input');
+      input.type = 'number';
+      input.className = 'field-input';
+      input.dataset.key = key;
+      input.dataset.required = field.required ? 'true' : 'false';
+      input.placeholder = field.label;
+
+    } else {
+      input = document.createElement('input');
+      input.type = 'text';
+      input.className = 'field-input';
+      input.dataset.key = key;
+      input.dataset.required = field.required ? 'true' : 'false';
+      input.placeholder = field.label;
+    }
+
+    var err = document.createElement('div');
+    err.className = 'field-error';
+    err.textContent = field.label + ' is required.';
+
+    group.appendChild(lbl);
+    group.appendChild(input);
+    group.appendChild(err);
+    container.appendChild(group);
+  });
+}
+
+function pickYesNo(key, val) {
+  var container = document.querySelector('[data-key="' + key + '"][data-fieldtype="boolean"]');
+  if (!container) return;
+  container.querySelectorAll('.yesno-btn').forEach(function(btn) {
+    btn.classList.remove('sel-yes', 'sel-no');
+  });
+  var btns = container.querySelectorAll('.yesno-btn');
+  if (val === 'Yes') btns[0].classList.add('sel-yes');
+  else               btns[1].classList.add('sel-no');
+  container.dataset.value = val;
+  // Clear parent error
+  var group = container.closest('.field-group');
+  if (group) group.classList.remove('has-error');
+}
+
+// ── Get field value by key ────────────────────────────────────
+function getFieldValue(key) {
+  // Try input/textarea first
+  var el = document.querySelector('.field-input[data-key="' + key + '"]');
+  if (el) return el.value.trim();
+  // Try yesno
+  var yn = document.querySelector('[data-fieldtype="boolean"][data-key="' + key + '"]');
+  if (yn) return yn.dataset.value || '';
+  return '';
+}
+
+// ── Build message ─────────────────────────────────────────────
+function buildMessage() {
+  var template = (config.template || '').trim();
+  var fields   = config.fields || [];
+
+  // Build values lookup
+  var vals = {};
+  vals['gender']  = selectedGender === 'male' ? 'Male' : 'Female';
+  vals['pronoun'] = selectedGender === 'male' ? 'He' : 'She';
+
+  var now = new Date();
+  vals['date'] = now.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+  vals['time'] = now.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
+
+  fields.forEach(function(field) {
+    if (!field.label) return;
+    var key = toKey(field.label);
+    vals[key] = getFieldValue(key);
+  });
+
+  // Single-pass token replacement
+  // Matches {{key}} or {{key|filter}}
+  var result = '';
+  var i = 0;
+  while (i < template.length) {
+    if (template[i] === '{' && template[i+1] === '{') {
+      var close = template.indexOf('}}', i+2);
+      if (close === -1) { result += template[i]; i++; continue; }
+      var inner = template.substring(i+2, close);
+      var parts = inner.split('|');
+      var key   = parts[0].trim();
+      var filter = parts[1] ? parts[1].trim() : null;
+      var val   = vals[key] !== undefined ? vals[key] : '';
+
+      if (val) {
+        if (filter === 'upper')      val = val.toUpperCase();
+        else if (filter === 'lower') val = val.toLowerCase();
+        else if (filter === 'capitalize') val = val.charAt(0).toUpperCase() + val.slice(1).toLowerCase();
+        if (key === 'notes') val = 'Notes: ' + val;
+        result += val;
+      }
+      // If val is empty, token outputs nothing (including its line if combined with cleanup below)
+      i = close + 2;
+    } else {
+      result += template[i];
+      i++;
+    }
+  }
+
+  // Clean up lines that became blank after empty token replacement
+  result = result.split('\n').filter(function(line) {
+    return line.trim() !== '';
+  }).join('\n');
+
+  return result;
+}
+
+// ── Validation ────────────────────────────────────────────────
+function validate() {
+  var ok = true;
+
+  // Gender
+  if (!selectedGender) {
+    document.getElementById('gender-error').classList.add('visible');
+    ok = false;
+  }
+
+  // Required fields
+  var fields = config.fields || [];
+  fields.forEach(function(field) {
+    if (!field.required) return;
+    var key = toKey(field.label);
+    var val = getFieldValue(key);
+    var group = document.querySelector('.field-group[data-key="' + key + '"]');
+    if (!val) {
+      if (group) group.classList.add('has-error');
+      ok = false;
+    } else {
+      if (group) group.classList.remove('has-error');
+    }
+  });
+
+  // Confirmation
+  if (!document.getElementById('confirm-check').checked) {
+    document.getElementById('confirm-block').classList.add('has-error');
+    ok = false;
+  } else {
+    document.getElementById('confirm-block').classList.remove('has-error');
+  }
+
+  return ok;
+}
+
+// ── Submit ────────────────────────────────────────────────────
+function handleSubmit() {
+  document.getElementById('send-error').textContent = '';
+
+  if (!validate()) return;
+
+  var volunteers = selectedGender === 'male' ? (config.men || []) : (config.women || []);
+
+  var addresses = [];
+  volunteers.forEach(function(v) {
+    if (!v.phone || !v.carrier) return;
+    var digits = v.phone.replace(/[^0-9]/g, '');
+    var domain = GATEWAYS[v.carrier];
+    if (digits && domain) addresses.push(digits + '@' + domain);
+  });
+
+  if (addresses.length === 0) {
+    document.getElementById('send-error').textContent =
+      'No ' + selectedGender + ' volunteers with valid phone and carrier are configured. Please update Coordinator Setup.';
+    return;
+  }
+
+  var message = buildMessage();
+  var mailto  = 'mailto:' + addresses.join(',') +
+                '?subject=' + encodeURIComponent('12th Step Request') +
+                '&body='    + encodeURIComponent(message);
+
+  window.open(mailto, '_self');
+
+  setTimeout(function() {
+    document.getElementById('form-card').style.display = 'none';
+    document.getElementById('success-screen').classList.add('visible');
+  }, 1000);
+}
+
+// ── Reset ─────────────────────────────────────────────────────
+function resetForm() {
+  selectedGender = null;
+  document.getElementById('opt-male').classList.remove('selected');
+  document.getElementById('opt-female').classList.remove('selected');
+  document.getElementById('gender-error').classList.remove('visible');
+  document.getElementById('confirm-check').checked = false;
+  document.getElementById('confirm-block').classList.remove('has-error');
+  document.getElementById('send-error').textContent = '';
+  buildFields();
+  document.getElementById('form-card').style.display = 'block';
+  document.getElementById('success-screen').classList.remove('visible');
+}
+</script>
+
+</body>
+</html>
