@@ -1,0 +1,1107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>12th Step Texter — Coordinator Setup</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Source+Sans+3:wght@300;400;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<style>
+  :root {
+    --cream: #f5f0e8;
+    --paper: #faf7f2;
+    --ink: #1c1c1c;
+    --muted: #7a7060;
+    --accent: #2d5a3d;
+    --accent-light: #e8f0eb;
+    --rule: #d8d0c0;
+    --men: #1e3a5f;
+    --men-light: #e8edf4;
+    --women: #5f1e3a;
+    --women-light: #f4e8ed;
+    --danger: #8b2020;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background-color: var(--cream);
+    color: var(--ink);
+    font-family: 'Source Sans 3', sans-serif;
+    font-weight: 300;
+    min-height: 100vh;
+    padding: 0 0 80px;
+  }
+
+  /* Header */
+  header {
+    background: var(--ink);
+    color: var(--cream);
+    padding: 28px 40px 24px;
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
+    border-bottom: 4px solid var(--accent);
+  }
+
+  header h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.75rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+
+  header span {
+    font-size: 0.85rem;
+    font-weight: 300;
+    color: #a09880;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  /* Layout */
+  .container {
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 40px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+  }
+
+  /* Section card */
+  .card {
+    background: var(--paper);
+    border: 1px solid var(--rule);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+
+  .card-header {
+    padding: 18px 28px 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .card-header.men { background: var(--men-light); border-left: 5px solid var(--men); }
+  .card-header.women { background: var(--women-light); border-left: 5px solid var(--women); }
+  .card-header.fields { background: var(--accent-light); border-left: 5px solid var(--accent); }
+  .card-header.template { background: #f0ede8; border-left: 5px solid #8b7040; }
+  .card-header.qr { background: #ede8f0; border-left: 5px solid #5a3d7a; }
+  .card-header.location { background: #e8f0f4; border-left: 5px solid #1e5f7a; }
+
+  .location-selects {
+    display: flex;
+    gap: 20px;
+  }
+
+  .loc-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    flex: 1;
+  }
+
+  .loc-label {
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  @media (max-width: 600px) {
+    .location-selects { flex-direction: column; gap: 12px; }
+  }
+
+  .card-header h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.15rem;
+    font-weight: 500;
+  }
+
+  .card-header .badge {
+    margin-left: auto;
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 3px 8px;
+    border-radius: 20px;
+  }
+
+  .men .badge { background: var(--men); color: white; }
+  .women .badge { background: var(--women); color: white; }
+
+  .card-body {
+    padding: 24px 28px;
+  }
+
+  .hint {
+    font-size: 0.82rem;
+    color: var(--muted);
+    margin-bottom: 18px;
+    line-height: 1.5;
+  }
+
+  /* Phone number list */
+  .phone-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+
+  .phone-row {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    animation: slideIn 0.18s ease;
+  }
+
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateY(-6px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .phone-row .num-label {
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: var(--muted);
+    width: 22px;
+    text-align: right;
+    flex-shrink: 0;
+    padding-top: 2px;
+  }
+
+  input[type="tel"], input[type="text"], textarea, select {
+    background: white;
+    border: 1px solid var(--rule);
+    border-radius: 2px;
+    padding: 9px 13px;
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 0.92rem;
+    font-weight: 300;
+    color: var(--ink);
+    transition: border-color 0.15s;
+    width: 100%;
+  }
+
+  input[type="tel"]:focus, input[type="text"]:focus, textarea:focus, select:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(45,90,61,0.08);
+  }
+
+  .phone-fields {
+    flex: 1;
+    display: flex;
+    gap: 10px;
+  }
+
+  .phone-fields .phone-input { flex: 0 0 160px; }
+  .phone-fields .label-input { flex: 1; }
+
+  .btn-remove {
+    background: none;
+    border: 1px solid var(--rule);
+    border-radius: 2px;
+    color: var(--muted);
+    width: 32px;
+    height: 32px;
+    cursor: pointer;
+    font-size: 1rem;
+    line-height: 1;
+    flex-shrink: 0;
+    transition: all 0.15s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .btn-remove:hover { border-color: var(--danger); color: var(--danger); background: #fff5f5; }
+
+  .btn-add {
+    background: none;
+    border: 1px dashed var(--rule);
+    border-radius: 2px;
+    color: var(--muted);
+    padding: 8px 16px;
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.15s;
+    width: 100%;
+    text-align: left;
+  }
+
+  .btn-add:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-light); }
+
+  .col-labels {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 6px;
+    padding-left: 34px;
+  }
+
+  .col-labels span {
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .col-labels .col-phone { flex: 0 0 160px; }
+  .col-labels .col-name  { flex: 1; }
+  .col-labels .col-del   { flex: 0 0 32px; }
+
+  /* Custom fields */
+  .fields-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 14px;
+  }
+
+  .field-row {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    animation: slideIn 0.18s ease;
+  }
+
+  .field-row input { flex: 1; }
+
+  .field-row select {
+    flex: 0 0 130px;
+  }
+
+  .field-row .required-toggle {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 0.78rem;
+    color: var(--muted);
+    cursor: pointer;
+    white-space: nowrap;
+  }
+
+  .required-toggle input[type="checkbox"] {
+    width: auto;
+    cursor: pointer;
+    accent-color: var(--accent);
+  }
+
+  .field-col-labels {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 6px;
+  }
+
+  .field-col-labels span {
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .field-col-labels .col-name { flex: 1; }
+  .field-col-labels .col-key  { flex: 0 0 150px; font-family: monospace; }
+  .field-col-labels .col-type { flex: 0 0 110px; }
+  .field-col-labels .col-req  { flex: 0 0 60px; }
+  .field-col-labels .col-del  { flex: 0 0 32px; }
+
+  .key-input {
+    font-family: 'Source Code Pro', 'Courier New', monospace !important;
+    font-size: 0.8rem !important;
+    color: var(--accent) !important;
+    background: #f0ede6 !important;
+    flex: 0 0 150px !important;
+  }
+
+  .key-input.locked { opacity: 0.7; }
+
+  /* System field rows */
+  .field-row.system-field {
+    background: #f0ede6;
+    border: 1px solid var(--rule);
+    border-radius: 2px;
+    padding: 6px 8px;
+  }
+
+  .field-row.system-field input[type="text"] {
+    background: transparent;
+    border-color: transparent;
+    font-weight: 400;
+    color: var(--ink);
+  }
+
+  .field-row.system-field input[type="text"]:focus {
+    background: white;
+    border-color: var(--accent);
+  }
+
+  .field-row.system-field .system-type {
+    flex: 0 0 130px;
+    font-size: 0.82rem;
+    color: var(--muted);
+    padding: 9px 13px;
+    border: 1px solid transparent;
+    display: flex;
+    align-items: center;
+  }
+
+  .field-row.system-field .system-req {
+    flex: 0 0 68px;
+    font-size: 0.78rem;
+    color: var(--accent);
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+  }
+
+  .lock-btn {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.85rem;
+    color: var(--muted);
+    flex-shrink: 0;
+  }
+
+  /* Template */
+  .template-area {
+    position: relative;
+  }
+
+  textarea {
+    min-height: 120px;
+    resize: vertical;
+    line-height: 1.6;
+    font-family: 'Source Code Pro', 'Courier New', monospace;
+    font-size: 0.85rem;
+  }
+
+  .token-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 10px;
+  }
+
+  .token-chip {
+    background: var(--ink);
+    color: var(--cream);
+    font-size: 0.72rem;
+    font-family: monospace;
+    padding: 4px 10px;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: background 0.15s;
+    border: none;
+  }
+
+  .token-chip:hover { background: var(--accent); }
+
+  .token-hint {
+    font-size: 0.78rem;
+    color: var(--muted);
+    margin-top: 8px;
+  }
+
+  /* QR section */
+  .btn-generate-qr {
+    background: #5a3d7a;
+    color: white;
+    border: none;
+    padding: 12px 28px;
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 0.92rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    cursor: pointer;
+    border-radius: 2px;
+    transition: background 0.15s;
+    margin-bottom: 20px;
+  }
+
+  .btn-generate-qr:hover { background: #3d2855; }
+
+  .qr-output {
+    display: none;
+  }
+
+  .qr-output.visible { display: block; }
+
+  .qr-code-wrap {
+    display: inline-block;
+    padding: 16px;
+    background: white;
+    border: 1px solid var(--rule);
+    border-radius: 2px;
+    margin-bottom: 16px;
+  }
+
+  .qr-url-label {
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 6px;
+  }
+
+  .qr-url-box {
+    background: #f0ede6;
+    border: 1px solid var(--rule);
+    border-radius: 2px;
+    padding: 10px 14px;
+    font-family: 'Source Code Pro', 'Courier New', monospace;
+    font-size: 0.72rem;
+    color: var(--ink);
+    word-break: break-all;
+    line-height: 1.5;
+    margin-bottom: 10px;
+  }
+
+  .btn-copy-url {
+    background: none;
+    border: 1px solid var(--rule);
+    color: var(--muted);
+    padding: 7px 16px;
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 0.82rem;
+    cursor: pointer;
+    border-radius: 2px;
+    transition: all 0.15s;
+  }
+
+  .btn-copy-url:hover { border-color: var(--accent); color: var(--accent); }
+
+  .qr-note {
+    font-size: 0.78rem;
+    color: var(--muted);
+    margin-top: 14px;
+    line-height: 1.5;
+    border-top: 1px solid var(--rule);
+    padding-top: 14px;
+  }
+
+  /* Save bar */
+  .save-bar {
+    position: sticky;
+    bottom: 0;
+    background: var(--ink);
+    padding: 16px 40px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    border-top: 3px solid var(--accent);
+  }
+
+  .save-status {
+    font-size: 0.82rem;
+    color: #a09880;
+    font-weight: 300;
+  }
+
+  .save-status.saved { color: #6daa80; }
+
+  .btn-save {
+    background: var(--accent);
+    color: white;
+    border: none;
+    padding: 12px 32px;
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 0.92rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    cursor: pointer;
+    border-radius: 2px;
+    transition: background 0.15s;
+  }
+
+  .btn-save:hover { background: #245030; }
+
+  .divider {
+    width: 1px;
+    height: 28px;
+    background: #3a3a3a;
+  }
+
+  /* Responsive */
+  @media (max-width: 600px) {
+    header { padding: 20px; flex-direction: column; gap: 4px; }
+    .card-body { padding: 18px 16px; }
+    .field-row select { flex: 0 0 100px; }
+    .save-bar { padding: 14px 20px; }
+    .col-labels { display: none; }
+    .phone-fields { flex-direction: column; }
+    .phone-fields .phone-input,
+    .phone-fields .label-input { flex: unset; width: 100%; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>12th Step Texter</h1>
+  <span>Coordinator Setup</span>
+</header>
+
+<div class="container">
+
+  <!-- LOCATION -->
+  <div class="card">
+    <div class="card-header location">
+      <h2>Location</h2>
+    </div>
+    <div class="card-body">
+      <p class="hint">Select the district and city this configuration covers. This appears on the facility form so staff knows which AA group they're contacting.</p>
+      <div class="location-selects">
+        <div class="loc-group">
+          <span class="loc-label">District</span>
+          <select id="district-select" onchange="onDistrictChange()">
+            <option value="">Select district...</option>
+          </select>
+        </div>
+        <div class="loc-group">
+          <span class="loc-label">City / Town</span>
+          <select id="city-select" disabled onchange="markUnsaved()">
+            <option value="">Select city...</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MEN'S LIST -->
+  <div class="card">
+    <div class="card-header men">
+      <h2>Men's Volunteer List</h2>
+      <div class="badge">Men</div>
+    </div>
+    <div class="card-body">
+      <p class="hint">Add the phone numbers of male A.A. volunteers. Optionally add a name for your reference. All numbers will receive the group text when a men's request is submitted.</p>
+      <div class="col-labels">
+        <span class="col-phone">Phone Number</span>
+        <span class="col-name">Name (optional)</span>
+        <span class="col-del"></span>
+      </div>
+      <div class="phone-list" id="men-list"></div>
+      <button class="btn-add" onclick="addPhone('men')">+ Add another number</button>
+    </div>
+  </div>
+
+  <!-- WOMEN'S LIST -->
+  <div class="card">
+    <div class="card-header women">
+      <h2>Women's Volunteer List</h2>
+      <div class="badge">Women</div>
+    </div>
+    <div class="card-body">
+      <p class="hint">Add the phone numbers of female A.A. volunteers. All numbers will receive the group text when a women's request is submitted.</p>
+      <div class="col-labels">
+        <span class="col-phone">Phone Number</span>
+        <span class="col-name">Name (optional)</span>
+        <span class="col-del"></span>
+      </div>
+      <div class="phone-list" id="women-list"></div>
+      <button class="btn-add" onclick="addPhone('women')">+ Add another number</button>
+    </div>
+  </div>
+
+  <!-- PATIENT INFO FIELDS -->
+  <div class="card">
+    <div class="card-header fields">
+      <h2>Patient Info Fields</h2>
+    </div>
+    <div class="card-body">
+      <p class="hint">Configure what the facility form will ask. The first two fields are system fields — always present, label editable, cannot be deleted or retyped. Add custom fields below them.</p>
+
+      <div class="field-col-labels">
+        <span class="col-name">Field Label</span>
+        <span class="col-key">Key (token)</span>
+        <span class="col-type">Type</span>
+        <span class="col-req">Required</span>
+        <span class="col-del"></span>
+      </div>
+      <div class="fields-list" id="fields-list"></div>
+      <button class="btn-add" onclick="addField()">+ Add another field</button>
+    </div>
+  </div>
+
+  <!-- TEXT TEMPLATE -->
+  <div class="card">
+    <div class="card-header template">
+      <h2>Text Message Template</h2>
+    </div>
+    <div class="card-body">
+      <p class="hint">Write the message that will be sent to volunteers. Click a token below to insert it — it will be replaced with the actual value when a request is submitted.</p>
+      <div class="template-area">
+        <textarea id="template-text" placeholder="e.g. 12TH STEP REQUEST...&#10;{{gender}} patient at {{facility_name}}, Room {{room_number}}.&#10;Patient: {{patient_first_name}} requested contact.&#10;Sent: {{date}} at {{time}}"></textarea>
+      </div>
+      <div class="token-chips" id="token-chips"></div>
+      <p class="token-hint">↑ Click a token to insert it at the cursor position</p>
+    </div>
+  </div>
+
+  <!-- QR CODE GENERATOR -->
+  <div class="card">
+    <div class="card-header qr">
+      <h2>Facility Form QR Code</h2>
+    </div>
+    <div class="card-body">
+      <p class="hint">Generate a QR code to share with facility staff. Scanning it opens the request form on their phone with all volunteer numbers pre-loaded. Regenerate and reshare whenever your volunteer list changes.</p>
+
+      <button class="btn-generate-qr" onclick="generateQR()">⬡ Generate QR Code</button>
+
+      <div class="qr-output" id="qr-output">
+        <div class="qr-code-wrap">
+          <div id="qr-canvas"></div>
+        </div>
+        <div class="qr-url-label">Facility Form URL</div>
+        <div class="qr-url-box" id="qr-url-display"></div>
+        <button class="btn-copy-url" onclick="copyQRUrl()">📋 Copy URL</button>
+        <p class="qr-note">
+          Share this QR code with facility staff — print it, text it, or email it as an image.
+          When the volunteer list changes, click Generate again and reshare the new code.
+        </p>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- SAVE BAR -->
+<div class="save-bar">
+  <span class="save-status" id="save-status">Unsaved changes</span>
+  <div style="display:flex;gap:12px;align-items:center;">
+    <button class="btn-save" onclick="saveConfig()">Save Configuration</button>
+  </div>
+</div>
+
+<script>
+  // ── District / City data ──────────────────────────────
+  const DISTRICTS = {
+    11: ['Billings','Garry Owen','Hardin','Huntley','Lodge Grass','Pryor','Roundup'],
+    12: ['Big Timber','Bridger','Columbus','Fromberg','Harlowton','Joliet','Laurel','Red Lodge'],
+    21: ['Culbertson','Glasgow','Plentywood','Poplar','Scoby','Winnett','Wolf Point'],
+    23: ['Crane','Fairview','Glendive','Savage','Sidney'],
+    31: ['Absarokee','Baker','Broadus','Busby','Colstrip','Crow Agency','Forsyth','Jordan','Lame Deer','Miles City','Terry'],
+    41: ['Fort Benton','Fort Shaw','Great Falls','Lewistown','Stanford'],
+    42: ['Browning','Chester','Choteau','Conrad','Cut Bank','Shelby','Valier'],
+    51: ['Box Elder','Chinook','Dodson','Fort Belknap','Harlem','Havre','Hays','Malta'],
+    61: ['Boulder','E. Helena','Elliston','Helena','Lincoln','Townsend','White Sulphur Springs'],
+    71: ['Anaconda','Butte','Deer Lodge','Dillon','Drummond','Hall','Jackson','Lima','Philipsburg','Sheridan','Twin Bridges','Warm Springs','Whitehall'],
+    72: ['Belgrade','Big Sky','Bozeman','Emigrant','Ennis','Gallatin Gateway','Gardiner','Livingston','Manhattan','Pony','Three Forks','Virginia City','West Yellowstone','Wilsall'],
+    81: ['Alberton','Arlee','Clinton','Frenchtown','Haugan','Hot Springs','Missoula','Noxon','Pablo','Plains','Polson','Ronan','Seeley Lake','St. Ignatius','St. Regis','Superior','Thompson Falls','Trout Creek'],
+    91: ['Big Fork','Columbia Falls','Coram','Eureka','Kalispell','Lakeside','Somers','West Glacier','Whitefish'],
+    93: ['Conner','Corvallis','Darby','Florence','Hamilton','Lolo','Stevensville','Victor']
+  };
+
+  function initLocationDropdowns(savedDistrict, savedCity) {
+    const distSel = document.getElementById('district-select');
+    Object.keys(DISTRICTS).sort((a,b) => Number(a)-Number(b)).forEach(d => {
+      const opt = document.createElement('option');
+      opt.value = d;
+      opt.textContent = 'District ' + d;
+      if (String(savedDistrict) === String(d)) opt.selected = true;
+      distSel.appendChild(opt);
+    });
+    if (savedDistrict) populateCities(savedDistrict, savedCity);
+  }
+
+  function onDistrictChange() {
+    const d = document.getElementById('district-select').value;
+    populateCities(d, '');
+    markUnsaved();
+  }
+
+  function populateCities(district, selectedCity) {
+    const citySel = document.getElementById('city-select');
+    citySel.innerHTML = '<option value="">Select city...</option>';
+    citySel.disabled = !district;
+    if (!district || !DISTRICTS[district]) return;
+    DISTRICTS[district].forEach(city => {
+      const opt = document.createElement('option');
+      opt.value = city;
+      opt.textContent = city;
+      if (city === selectedCity) opt.selected = true;
+      citySel.appendChild(opt);
+    });
+  }
+
+  // ── State ─────────────────────────────────────────────
+  let menCount = 0;
+  let womenCount = 0;
+  let fieldCount = 0;
+
+  // ── Init ──────────────────────────────────────────────
+  window.addEventListener('DOMContentLoaded', () => {
+    loadConfig();
+    markUnsaved();
+  });
+
+  // ── Phone lists ───────────────────────────────────────
+  function addPhone(group, phone = '', label = '') {
+    const list = document.getElementById(`${group}-list`);
+    const count = group === 'men' ? ++menCount : ++womenCount;
+    const row = document.createElement('div');
+    row.className = 'phone-row';
+    row.dataset.group = group;
+    row.id = `${group}-row-${count}`;
+    row.innerHTML = `
+      <span class="num-label">${count}</span>
+      <div class="phone-fields">
+        <input type="tel" placeholder="(555) 555-5555" value="${phone}"
+          oninput="formatPhone(this); markUnsaved()" class="phone-input">
+        <input type="text" placeholder="Name (optional)" value="${label}"
+          oninput="filterName(this); markUnsaved()" class="label-input">
+      </div>
+      <button class="btn-remove" onclick="removeRow('${row.id}')" title="Remove">×</button>
+    `;
+    list.appendChild(row);
+    if (!phone) row.querySelector('input').focus();
+    renumberList(group);
+    markUnsaved();
+  }
+
+  function removeRow(id) {
+    const el = document.getElementById(id);
+    if (el) {
+      const group = el.dataset.group;
+      el.remove();
+      renumberList(group || 'field');
+      markUnsaved();
+    }
+  }
+
+  function renumberList(group) {
+    if (group === 'field') return;
+    const rows = document.querySelectorAll(`#${group}-list .phone-row`);
+    rows.forEach((row, i) => {
+      row.querySelector('.num-label').textContent = i + 1;
+    });
+  }
+
+  function formatPhone(input) {
+    let v = input.value.replace(/\D/g, '').substring(0, 10);
+    if (v.length >= 7) v = `(${v.slice(0,3)}) ${v.slice(3,6)}-${v.slice(6)}`;
+    else if (v.length >= 4) v = `(${v.slice(0,3)}) ${v.slice(3)}`;
+    else if (v.length >= 1) v = `(${v}`;
+    input.value = v;
+  }
+
+  function filterName(input) {
+    input.value = input.value.replace(/[0-9]/g, '');
+  }
+
+  // ── Custom fields ─────────────────────────────────────────────
+  const SYSTEM_FIELDS = [
+    { key: 'gender',    label: 'Gender',                          type: 'Male / Female selector',   note: 'Routes to correct volunteer list' },
+    { key: 'requested', label: 'Patient has requested AA contact', type: 'Required confirmation',    note: 'Hard gate — form cannot submit without this' }
+  ];
+
+  function addSystemField(keyName, label) {
+    const list = document.getElementById('fields-list');
+    const def = SYSTEM_FIELDS.find(f => f.key === keyName);
+    const row = document.createElement('div');
+    row.className = 'field-row system-field';
+    row.dataset.system = keyName;
+    row.innerHTML = `
+      <input type="text" value="${label}" title="You may rename this field"
+        oninput="markUnsaved()" placeholder="${def ? def.label : label}">
+      <span class="system-type" title="${def ? def.note : ''}">${def ? def.type : ''}</span>
+      <span class="system-req">✓ Req'd</span>
+      <span class="lock-btn" title="System field — cannot be removed">🔒</span>
+    `;
+    list.insertBefore(row, list.firstChild);
+  }
+
+  function labelToKey(label) {
+    return label.toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_|_$/g, '');
+  }
+
+  function addField(label = '', type = 'text', required = false, key = '') {
+    const list = document.getElementById('fields-list');
+    const id = `field-row-${++fieldCount}`;
+    const derivedKey = key || (label ? labelToKey(label) : '');
+    const isManual = !!(key && key !== labelToKey(label));
+    const row = document.createElement('div');
+    row.className = 'field-row';
+    row.id = id;
+    row.innerHTML = `
+      <input type="text" placeholder='e.g. "Facility Name"' value="${label}"
+        class="label-field" oninput="onLabelInput(this); markUnsaved()">
+      <input type="text" placeholder="key" value="${derivedKey}"
+        class="key-input ${isManual ? 'locked' : ''}"
+        data-manual="${isManual}"
+        oninput="onKeyInput(this); markUnsaved()"
+        title="Token key — auto-fills from label, or type to override">
+      <select onchange="updateTokens(); markUnsaved()">
+        <option value="text"      ${type==='text'     ?'selected':''}>Text</option>
+        <option value="multiline" ${type==='multiline'?'selected':''}>Multi-line</option>
+        <option value="number"    ${type==='number'   ?'selected':''}>Number</option>
+        <option value="boolean"   ${type==='boolean'  ?'selected':''}>Yes / No</option>
+        <option value="select"    ${type==='select'   ?'selected':''}>Dropdown</option>
+      </select>
+      <label class="required-toggle">
+        <input type="checkbox" ${required?'checked':''} onchange="markUnsaved()"> Req'd
+      </label>
+      <button class="btn-remove" onclick="removeField('${id}')" title="Remove">×</button>
+    `;
+    list.appendChild(row);
+    if (!label) row.querySelector('.label-field').focus();
+    updateTokens();
+    markUnsaved();
+  }
+
+  function onLabelInput(labelEl) {
+    const row = labelEl.closest('.field-row');
+    const keyEl = row.querySelector('.key-input');
+    if (keyEl.dataset.manual !== 'true') {
+      keyEl.value = labelToKey(labelEl.value);
+    }
+    updateTokens();
+  }
+
+  function onKeyInput(keyEl) {
+    keyEl.dataset.manual = 'true';
+    keyEl.classList.add('locked');
+    updateTokens();
+  }
+
+  function removeField(id) {
+    const el = document.getElementById(id);
+    if (el) { el.remove(); updateTokens(); markUnsaved(); }
+  }
+
+  // ── Token chips ───────────────────────────────────────────────
+  function updateTokens() {
+    const chips = document.getElementById('token-chips');
+    chips.innerHTML = '';
+
+    const builtIn = ['{{gender}}', '{{date}}', '{{time}}'];
+    builtIn.forEach(token => {
+      const btn = document.createElement('button');
+      btn.className = 'token-chip';
+      btn.textContent = token;
+      btn.onclick = () => insertToken(token);
+      chips.appendChild(btn);
+    });
+
+    const fieldRows2 = document.querySelectorAll('#fields-list .field-row:not(.system-field)');
+    fieldRows2.forEach(row => {
+      const label = row.querySelector('.label-field') ? row.querySelector('.label-field').value.trim() : '';
+      const keyEl = row.querySelector('.key-input');
+      const key = keyEl ? keyEl.value.trim() : labelToKey(label);
+      if (!key) return;
+      const token = '{{' + key + '}}';
+      const btn = document.createElement('button');
+      btn.className = 'token-chip';
+      btn.textContent = token;
+      btn.onclick = () => insertToken(token);
+      chips.appendChild(btn);
+    });
+  }
+
+  function insertToken(token) {
+    const ta = document.getElementById('template-text');
+    const start = ta.selectionStart;
+    const end = ta.selectionEnd;
+    const text = ta.value;
+    ta.value = text.substring(0, start) + token + text.substring(end);
+    ta.selectionStart = ta.selectionEnd = start + token.length;
+    ta.focus();
+    markUnsaved();
+  }
+
+  // ── Save / Load ───────────────────────────────────────────────
+  function saveConfig() {
+    const systemLabels = {};
+    document.querySelectorAll('.system-field[data-system]').forEach(row => {
+      systemLabels[row.dataset.system] = row.querySelector('input').value;
+    });
+    const config = {
+      district: document.getElementById('district-select').value,
+      city: document.getElementById('city-select').value,
+      men: getPhoneList('men'),
+      women: getPhoneList('women'),
+      fields: getFieldList(),
+      systemLabels,
+      template: document.getElementById('template-text').value
+    };
+    localStorage.setItem('12step-config', JSON.stringify(config));
+
+    const status = document.getElementById('save-status');
+    status.textContent = 'Saved ✓';
+    status.className = 'save-status saved';
+    setTimeout(() => {
+      status.textContent = 'All changes saved';
+    }, 2000);
+  }
+
+  function loadConfig() {
+    const raw = localStorage.getItem('12step-config');
+    const MIN_PHONES = 10;
+
+    addSystemField('requested', 'Patient has requested AA contact');
+    addSystemField('gender', 'Gender');
+
+    if (raw) {
+      const config = JSON.parse(raw);
+      initLocationDropdowns(config.district || '', config.city || '');
+      const menList = config.men || [];
+      const womenList = config.women || [];
+      menList.forEach(e => addPhone('men', e.phone, e.label));
+      womenList.forEach(e => addPhone('women', e.phone, e.label));
+      for (let i = menList.length; i < MIN_PHONES; i++) addPhone('men');
+      for (let i = womenList.length; i < MIN_PHONES; i++) addPhone('women');
+      (config.fields || [])
+        .filter(f => f.label && !['gender','patient has requested aa contact','patient requested contact','patient requested aa visit','patient consented to contact'].includes(f.label.toLowerCase()))
+        .forEach(f => addField(f.label, f.type, f.required, f.key || ''));
+      if (config.systemLabels) {
+        Object.entries(config.systemLabels).forEach(([key, label]) => {
+          const row = document.querySelector(`.system-field[data-system="${key}"] input`);
+          if (row) row.value = label;
+        });
+      }
+      document.getElementById('template-text').value = config.template || '';
+      updateTokens();
+      const status = document.getElementById('save-status');
+      status.textContent = 'Configuration loaded';
+      status.className = 'save-status saved';
+      setTimeout(() => markUnsaved(), 100);
+    } else {
+      initLocationDropdowns('', '');
+      for (let i = 0; i < MIN_PHONES; i++) addPhone('men');
+      for (let i = 0; i < MIN_PHONES; i++) addPhone('women');
+      addField('Facility Name', 'text', true, 'facility_name');
+      addField('Room Number', 'number', false, 'room_number');
+      addField('Patient First Name & Last Initial', 'text', true, 'patient_name');
+      addField('Age', 'number', false, 'age');
+      addField('Notes (if any)', 'multiline', false, 'notes');
+      document.getElementById('template-text').value =
+        '12TH STEP REQUEST...\n{{gender}} patient at {{facility_name}}, Room {{room_number}}.\nPatient: {{patient_name|upper}}. {{pronoun}} requested a visit.\n{{notes}}';
+      updateTokens();
+    }
+  }
+
+  function getPhoneList(group) {
+    const rows = document.querySelectorAll(`#${group}-list .phone-row`);
+    return Array.from(rows).map(row => ({
+      phone: row.querySelector('.phone-input').value,
+      label: row.querySelector('.label-input').value
+    })).filter(e => e.phone.trim());
+  }
+
+  function getFieldList() {
+    const rows = document.querySelectorAll('#fields-list .field-row:not(.system-field)');
+    return Array.from(rows).map(row => ({
+      label: row.querySelector('.label-field').value,
+      key:   row.querySelector('.key-input').value || labelToKey(row.querySelector('.label-field').value),
+      type:  row.querySelector('select').value,
+      required: row.querySelector('input[type="checkbox"]').checked
+    })).filter(f => f.label.trim());
+  }
+
+  function markUnsaved() {
+    const status = document.getElementById('save-status');
+    status.textContent = 'Unsaved changes';
+    status.className = 'save-status';
+  }
+
+  // ── QR Code generation ────────────────────────────────────────
+  function buildConfigForQR() {
+    // Lean payload — strip volunteer names, systemLabels, format phones as raw digits
+    // Facility form only needs digits, fields, and template
+    const men = getPhoneList('men')
+      .map(v => v.phone.replace(/\D/g, ''))
+      .filter(d => d.length >= 10);
+    const women = getPhoneList('women')
+      .map(v => v.phone.replace(/\D/g, ''))
+      .filter(d => d.length >= 10);
+    return {
+      district: document.getElementById('district-select').value,
+      city: document.getElementById('city-select').value,
+      men,
+      women,
+      fields: getFieldList(),
+      template: document.getElementById('template-text').value
+    };
+  }
+
+  function encodeConfig(config) {
+    const json = JSON.stringify(config);
+    // Handle Unicode safely, then base64-encode URL-safe
+    const b64 = btoa(unescape(encodeURIComponent(json)));
+    return b64.replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '');
+  }
+
+  function buildFacilityURL(encoded) {
+    const base = window.location.href
+      .split('?')[0]
+      .replace(/sms-coordinator-setup[^/]*\.html/, 'sms-facility-form-v4.html')
+      .replace(/coordinator-setup[^/]*\.html/, 'sms-facility-form-v4.html');
+    return base + '?config=' + encoded;
+  }
+
+  function generateQR() {
+    // Auto-save first so config is current
+    saveConfig();
+
+    const config = buildConfigForQR();
+
+    if (config.men.length === 0 && config.women.length === 0) {
+      alert('Please add at least one volunteer phone number before generating the QR code.');
+      return;
+    }
+
+    const encoded = encodeConfig(config);
+    const url = buildFacilityURL(encoded);
+
+    // Clear previous QR
+    const canvas = document.getElementById('qr-canvas');
+    canvas.innerHTML = '';
+
+    new QRCode(canvas, {
+      text: url,
+      width: 380,
+      height: 380,
+      colorDark: '#1c1c1c',
+      colorLight: '#ffffff',
+      correctLevel: QRCode.CorrectLevel.L
+    });
+
+    document.getElementById('qr-url-display').textContent = url;
+    document.getElementById('qr-output').classList.add('visible');
+
+    // Scroll to QR output
+    document.getElementById('qr-output').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+
+  function copyQRUrl() {
+    const url = document.getElementById('qr-url-display').textContent;
+    navigator.clipboard.writeText(url).then(() => {
+      const btn = document.querySelector('.btn-copy-url');
+      btn.textContent = '✓ Copied!';
+      setTimeout(() => btn.textContent = '📋 Copy URL', 2000);
+    }).catch(() => {
+      alert('URL: ' + url);
+    });
+  }
+</script>
+
+</body>
+</html>
