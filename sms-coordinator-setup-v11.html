@@ -967,6 +967,8 @@
       systemLabels,
       template: document.getElementById('template-text').value,
       listUpdated: document.getElementById('list-updated-toggle').checked
+    };
+    localStorage.setItem('12step-config', JSON.stringify(config));
 
     const status = document.getElementById('save-status');
     status.textContent = 'Saved ✓';
@@ -1072,6 +1074,8 @@
       fields: getFieldList(),
       template: document.getElementById('template-text').value,
       listUpdated: document.getElementById('list-updated-toggle').checked
+    };
+  }
 
   function encodeConfig(config) {
     const json = JSON.stringify(config);
