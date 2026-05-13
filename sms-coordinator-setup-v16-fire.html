@@ -1000,8 +1000,8 @@
   function buildFacilityURL() {
     const base = window.location.href
       .split('?')[0]
-      .replace(/sms-coordinator-setup[^/]*\.html/, 'sms-facility-form-v10.html')
-      .replace(/coordinator-setup[^/]*\.html/, 'sms-facility-form-v10.html');
+      .replace(/sms-coordinator-setup[^/]*\.html/, 'sms-facility-form-v10-fire.html')
+      .replace(/coordinator-setup[^/]*\.html/, 'sms-facility-form-v10-fire.html');
     const cityKey = getCityKey();
     if (cityKey) return base + '?city=' + cityKey;
     // Fallback: encode full config if no city selected
