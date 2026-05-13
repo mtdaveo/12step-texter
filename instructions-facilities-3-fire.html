@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>12th Step Texter — Instructions for Facility Staff</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500&family=Source+Sans+3:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f5f0e8;
+    --card: #ffffff;
+    --border: #d8d0c0;
+    --text: #1c1c1c;
+    --muted: #7a7060;
+    --accent: #2d5a3d;
+    --accent-light: #e8f0eb;
+    --rule: #d8d0c0;
+    --ink: #1c1c1c;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: 'Source Sans 3', sans-serif; font-weight: 300; min-height: 100vh; padding: 0 0 80px; }
+  .doc-header { background: var(--ink); color: var(--bg); padding: 32px 40px 28px; border-bottom: 4px solid var(--accent); }
+  .doc-header .eyebrow { font-size: 0.72rem; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: #a09880; margin-bottom: 8px; }
+  .doc-header h1 { font-family: 'Playfair Display', serif; font-size: 1.7rem; font-weight: 500; line-height: 1.2; }
+  .doc-body { max-width: 680px; margin: 0 auto; padding: 48px 32px; }
+  h2 { font-family: 'Playfair Display', serif; font-size: 1.15rem; font-weight: 500; color: var(--accent); margin: 40px 0 14px; padding-bottom: 8px; border-bottom: 1px solid var(--rule); }
+  h2:first-child { margin-top: 0; }
+  p { font-size: 0.95rem; line-height: 1.75; color: var(--text); margin-bottom: 14px; }
+  .steps { display: flex; flex-direction: column; gap: 12px; margin: 20px 0; }
+  .step { display: flex; gap: 16px; align-items: flex-start; background: var(--card); border: 1px solid var(--border); border-radius: 3px; padding: 16px 18px; }
+  .step-num { width: 28px; height: 28px; min-width: 28px; background: var(--accent); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; font-weight: 600; margin-top: 1px; }
+  .step-content { flex: 1; }
+  .step-title { font-weight: 600; font-size: 0.95rem; margin-bottom: 5px; color: var(--ink); }
+  .step-body { font-size: 0.88rem; line-height: 1.6; color: var(--muted); }
+  .step-body ul { margin: 6px 0 0 16px; }
+  .step-body li { margin-bottom: 3px; }
+  .note-block { background: var(--card); border: 1px solid var(--border); border-left: 4px solid var(--accent); border-radius: 3px; padding: 16px 20px; margin: 20px 0; font-size: 0.88rem; line-height: 1.65; color: var(--text); }
+  .note-block strong { color: var(--ink); }
+  strong { font-weight: 600; }
+  .back-link { display: inline-flex; align-items: center; gap: 6px; font-size: 0.82rem; color: var(--muted); text-decoration: none; margin-top: 40px; transition: color 0.15s; }
+  .back-link:hover { color: var(--accent); }
+  .thanks { margin-top: 32px; font-size: 0.95rem; font-weight: 500; color: var(--accent); }
+  @media (max-width: 600px) { .doc-header { padding: 24px 20px; } .doc-body { padding: 32px 20px; } }
+</style>
+</head>
+<body>
+
+<div class="doc-header">
+  <div class="eyebrow">12th Step Texter</div>
+  <h1>Instructions for Facility Staff</h1>
+</div>
+
+<div class="doc-body">
+
+  <h2>What This Is</h2>
+  <p>12th Step Texter is a simple tool that connects your patients with Alcoholics Anonymous volunteers. When a patient requests a visit from A.A., this form sends their information directly to local A.A. volunteers by text — in seconds, from your phone.</p>
+
+  <h2>How to Submit a Request</h2>
+
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-content">
+        <div class="step-title">Open the form</div>
+        <div class="step-body">Scan the QR code posted at your station, or tap the link provided by your A.A. contact. The form opens directly in your phone's browser — nothing to download or install. The QR code is permanent and always loads the current volunteer list automatically.</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-content">
+        <div class="step-title">Select Male or Female</div>
+        <div class="step-body">This routes the request to the correct A.A. volunteer list.</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-content">
+        <div class="step-title">Fill in the patient information</div>
+        <div class="step-body">
+          <ul>
+            <li>Facility name</li>
+            <li>Room number (optional — or use Notes below)</li>
+            <li>Patient first name and last initial</li>
+            <li>Patient age</li>
+            <li>Notes (optional)</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">4</div>
+      <div class="step-content">
+        <div class="step-title">Confirm the patient's request</div>
+        <div class="step-body">Check the box confirming that <strong>the patient personally asked for A.A. contact.</strong> In our experience, one who makes the request themselves is in a better place to benefit from our visit.</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">5</div>
+      <div class="step-content">
+        <div class="step-title">Hit Send</div>
+        <div class="step-body">Your phone's text messaging app will open with all the volunteer numbers and the patient information already filled in. Tap Send. That's it.</div>
+      </div>
+    </div>
+  </div>
+
+  <h2>A Few Things Worth Knowing</h2>
+
+  <div class="note-block">
+    <strong>Always use the QR code or link — not a saved text thread.</strong><br>
+    Your phone may save the group text thread from a previous submission. Please don't use that old thread to send new requests. The QR code always opens a fresh form with the current, up-to-date volunteer list. The old thread may be missing volunteers or include numbers that are no longer active.
+  </div>
+
+  <div class="note-block">
+    <strong>About the group text thread on your phone.</strong><br>
+    After your first submission, your phone will create a group text thread with the volunteer names or numbers. You may want to rename it something recognizable — on iPhone, tap the group name at the top of the thread and select "Change Name." On Android, tap the three dots or group name and look for "Group name." Something like "AA Billings Volunteers" works well. If A.A. notifies you that their volunteer list has changed, please delete the old thread and let a new one be created on your next submission.
+  </div>
+
+  <div class="note-block">
+    <strong>Responses come back to you.</strong><br>
+    A.A. volunteers reply directly to the text thread. You'll see their responses and can pass along any relevant information to the patient.
+  </div>
+
+  <h2>Questions</h2>
+  <p>For questions about the form or the volunteer list, reach out to the A.A. contact as listed at the top of the Request form.</p>
+
+  <p class="thanks">Thank you for supporting your patients in this way.</p>
+
+  <a href="index.html" class="back-link">← Back to 12th Step Texter</a>
+
+</div>
+</body>
+</html>
