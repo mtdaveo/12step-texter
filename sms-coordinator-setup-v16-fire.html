@@ -694,7 +694,7 @@
 
   // ── Init ──────────────────────────────────────────────
   window.addEventListener('DOMContentLoaded', () => {
-    window.scrollTo(0, 0);
+		history.scrollRestoration = 'manual'; window.scrollTo(0, 0);
     loadConfig();
   });
 
