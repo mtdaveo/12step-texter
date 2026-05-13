@@ -397,9 +397,11 @@
   // ── Init ──────────────────────────────────────────────
 	if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
   window.addEventListener('DOMContentLoaded', () => {
-    window.scrollTo(0, 0);
     loadConfig();
+    window.scrollTo(0, 0);
+    requestAnimationFrame(() => window.scrollTo(0, 0));
   });
+  window.addEventListener('load', () => window.scrollTo(0, 0));
 
   function getNamePlaceholder() {
     return window.innerWidth <= 600 ? 'Name (optional — A.A. use only)' : 'Name (optional)';
