@@ -395,8 +395,8 @@
   let menCount = 0, womenCount = 0, fieldCount = 0;
 
   // ── Init ──────────────────────────────────────────────
+	if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
   window.addEventListener('DOMContentLoaded', () => {
-    history.scrollRestoration = 'manual';
     window.scrollTo(0, 0);
     loadConfig();
   });
