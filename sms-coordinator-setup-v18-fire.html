@@ -617,7 +617,7 @@
       addField('Age', 'number', true, 'age');
       addField('Notes (if any)', 'multiline', false, 'notes');
       document.getElementById('template-text').value =
-        '12TH STEP REQUEST...\nFacility: {{facility_name}}\nRoom: {{room_number}}\nName: {{patient_name|upper}}\nInfo: {{age}} yr old {{gender}}\n{{notes}}';
+        '12TH STEP REQUEST...\nFacility: {{facility_name}}\nRoom: {{room_number}}\nName: {{patient_name|upper}}\nInfo: {{age}} yr old {{gender}}\n\n{{notes}}';
       updateTokens();
     }
   }
