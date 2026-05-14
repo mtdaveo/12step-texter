@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>12th Step Texter — Coordinator Setup</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Source+Sans+3:wght@300;400;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<style>
+  :root {
+    --cream: #f5f0e8;
+    --paper: #faf7f2;
+    --ink: #1c1c1c;
+    --muted: #7a7060;
+    --accent: #2d5a3d;
+    --accent-light: #e8f0eb;
+    --rule: #d8d0c0;
+    --men: #1e3a5f;
+    --men-light: #e8edf4;
+    --women: #5f1e3a;
+    --women-light: #f4e8ed;
+    --danger: #8b2020;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background-color: var(--cream);
+    color: var(--ink);
+    font-family: 'Source Sans 3', sans-serif;
+    font-weight: 300;
+    min-height: 100vh;
+    padding: 0 0 80px;
+  }
+  header {
+    background: var(--ink);
+    color: var(--cream);
+    padding: 28px 40px 24px;
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
+    border-bottom: 4px solid var(--accent);
+  }
+  header h1 { font-family: 'Playfair Display', serif; font-size: 1.75rem; font-weight: 700; letter-spacing: -0.02em; }
+  header span { font-size: 0.85rem; font-weight: 300; color: #a09880; letter-spacing: 0.12em; text-transform: uppercase; }
+  .container { max-width: 780px; margin: 0 auto; padding: 40px 24px; display: flex; flex-direction: column; gap: 40px; }
+  .card { background: var(--paper); border: 1px solid var(--rule); border-radius: 2px; overflow: hidden; }
+  .card-header {
+    padding: 18px 28px 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border-bottom: 1px solid var(--rule);
+  }
+  .card.collapsible .card-header { cursor: pointer; user-select: none; }
+  .card.collapsible .card-header:hover { filter: brightness(0.97); }
+  .card-header.men { background: var(--men-light); border-left: 5px solid var(--men); }
+  .card-header.women { background: var(--women-light); border-left: 5px solid var(--women); }
+  .card-header.fields { background: var(--accent-light); border-left: 5px solid var(--accent); }
+  .card-header.template { background: #f0ede8; border-left: 5px solid #8b7040; }
+  .card-header.qr { background: #ede8f0; border-left: 5px solid #5a3d7a; }
+  .card-header.location { background: #e8f0f4; border-left: 5px solid #1e5f7a; }
+  .card-header h2 { font-family: 'Playfair Display', serif; font-size: 1.15rem; font-weight: 500; }
+  .card-header .badge {
+    font-size: 0.72rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase;
+    padding: 3px 8px; border-radius: 20px;
+  }
+  .men .badge { background: var(--men); color: white; }
+  .women .badge { background: var(--women); color: white; }
+  .card-chevron {
+    margin-left: auto;
+    font-size: 0.75rem;
+    color: var(--muted);
+    transition: transform 0.22s ease;
+    flex-shrink: 0;
+    padding-left: 8px;
+  }
+  .card-header .badge + .card-chevron { margin-left: 8px; }
+  .card-header h2 + .card-chevron { margin-left: auto; }
+  .card.collapsed .card-chevron { transform: rotate(-90deg); }
+  .card.collapsed .card-body { display: none; }
+  .card-body { padding: 24px 28px; }
+  .hint { font-size: 0.82rem; color: var(--muted); margin-bottom: 18px; line-height: 1.5; }
+  .location-selects { display: flex; gap: 20px; }
+  .loc-group { display: flex; flex-direction: column; gap: 6px; flex: 1; }
+  .loc-label { font-size: 0.7rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+  @media (max-width: 600px) { .location-selects { flex-direction: column; gap: 12px; } }
+  .phone-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 14px; }
+  .phone-row { display: flex; gap: 10px; align-items: center; animation: slideIn 0.18s ease; }
+  @keyframes slideIn { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
+  .phone-row .num-label { font-size: 0.72rem; font-weight: 600; color: var(--muted); width: 22px; text-align: right; flex-shrink: 0; padding-top: 2px; }
+  input[type="tel"], input[type="text"], textarea, select {
+    background: white; border: 1px solid var(--rule); border-radius: 2px;
+    padding: 9px 13px; font-family: 'Source Sans 3', sans-serif; font-size: 0.92rem;
+    font-weight: 300; color: var(--ink); transition: border-color 0.15s; width: 100%;
+  }
+  input[type="tel"]:focus, input[type="text"]:focus, textarea:focus, select:focus {
+    outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(45,90,61,0.08);
+  }
+  .phone-fields { flex: 1; display: flex; gap: 10px; }
+  .phone-fields .phone-input { flex: 0 0 160px; }
+  .phone-fields .label-input { flex: 1; }
+  .btn-remove {
+    background: none; border: 1px solid var(--rule); border-radius: 2px; color: var(--muted);
+    width: 32px; height: 32px; cursor: pointer; font-size: 1rem; line-height: 1; flex-shrink: 0;
+    transition: all 0.15s; display: flex; align-items: center; justify-content: center;
+  }
+  .btn-remove:hover { border-color: var(--danger); color: var(--danger); background: #fff5f5; }
+  .btn-add {
+    background: none; border: 1px dashed var(--rule); border-radius: 2px; color: var(--muted);
+    padding: 8px 16px; font-family: 'Source Sans 3', sans-serif; font-size: 0.85rem; cursor: pointer;
+    transition: all 0.15s; width: 100%; text-align: left;
+  }
+  .btn-add:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-light); }
+  .col-labels { display: flex; gap: 10px; margin-bottom: 6px; padding-left: 34px; }
+  .col-labels span { font-size: 0.7rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+  .col-labels .col-phone { flex: 0 0 160px; }
+  .col-labels .col-name  { flex: 1; }
+  .col-labels .col-del   { flex: 0 0 32px; }
+  .key-input { font-family: 'Source Code Pro', 'Courier New', monospace !important; font-size: 0.8rem !important; color: var(--accent) !important; background: #f0ede6 !important; flex: 0 0 150px !important; }
+  .key-input.locked { opacity: 0.7; }
+  .lock-btn { width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; font-size: 0.85rem; color: var(--muted); flex-shrink: 0; }
+  .template-area { position: relative; }
+  textarea { min-height: 120px; resize: vertical; line-height: 1.6; font-family: 'Source Code Pro', 'Courier New', monospace; font-size: 0.85rem; }
+  .btn-generate-qr { background: #5a3d7a; color: white; border: none; padding: 12px 28px; font-family: 'Source Sans 3', sans-serif; font-size: 0.92rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; cursor: pointer; border-radius: 2px; transition: background 0.15s; margin-bottom: 20px; }
+  .btn-generate-qr:hover { background: #3d2855; }
+  .qr-output { display: none; }
+  .qr-output.visible { display: block; }
+  .qr-code-wrap { display: inline-block; padding: 16px; background: white; border: 1px solid var(--rule); border-radius: 2px; margin-bottom: 16px; }
+  .qr-url-label { font-size: 0.72rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
+  .qr-url-box { background: #f0ede6; border: 1px solid var(--rule); border-radius: 2px; padding: 10px 14px; font-family: 'Source Code Pro', 'Courier New', monospace; font-size: 0.72rem; color: var(--ink); word-break: break-all; line-height: 1.5; margin-bottom: 10px; }
+  .qr-btn-row { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 4px; }
+  .btn-copy-url { background: none; border: 1px solid var(--rule); color: var(--muted); padding: 7px 16px; font-family: 'Source Sans 3', sans-serif; font-size: 0.82rem; cursor: pointer; border-radius: 2px; transition: all 0.15s; }
+  .btn-copy-url:hover { border-color: var(--accent); color: var(--accent); }
+  .qr-note { font-size: 0.78rem; color: var(--muted); margin-top: 14px; line-height: 1.5; border-top: 1px solid var(--rule); padding-top: 14px; }
+  .cloud-status { font-size: 0.78rem; margin-top: 8px; padding: 6px 10px; border-radius: 2px; display: none; }
+  .cloud-status.ok { display: block; color: var(--accent); background: var(--accent-light); }
+  .cloud-status.err { display: block; color: var(--danger); background: #fff5f5; }
+  .save-bar { position: sticky; bottom: 0; background: var(--ink); padding: 16px 40px; display: flex; align-items: center; justify-content: space-between; gap: 20px; border-top: 3px solid var(--accent); }
+  .save-status { font-size: 0.82rem; color: #a09880; font-weight: 300; }
+  .save-status.saved { color: #6daa80; }
+  .btn-save { background: var(--accent); color: white; border: none; padding: 12px 32px; font-family: 'Source Sans 3', sans-serif; font-size: 0.92rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; cursor: pointer; border-radius: 2px; transition: background 0.15s; }
+  .btn-save:hover { background: #245030; }
+  @media (max-width: 600px) {
+    header { padding: 20px; flex-direction: column; gap: 4px; }
+    .card-body { padding: 18px 16px; }
+    .save-bar { padding: 14px 20px; }
+    .col-labels { display: none; }
+    .phone-fields { flex-direction: column; }
+    .phone-fields .phone-input, .phone-fields .label-input { flex: unset; width: 100%; }
+  }
+</style>
+</head>
+<body>
+<header>
+  <h1>12th Step Texter</h1>
+  <span>Coordinator Setup</span>
+</header>
+<div class="container">
+
+  <!-- LOCATION — always open -->
+  <div class="card" id="card-location">
+    <div class="card-header location">
+      <h2>Location</h2>
+    </div>
+    <div class="card-body">
+      <p class="hint">Select the district and city this configuration covers. This appears on the facility form so staff knows which AA group they're contacting.</p>
+      <div class="location-selects">
+        <div class="loc-group">
+          <span class="loc-label">District</span>
+          <select id="district-select" onchange="onDistrictChange()">
+            <option value="">Select district...</option>
+          </select>
+        </div>
+        <div class="loc-group">
+          <span class="loc-label">City / Town</span>
+          <select id="city-select" disabled onchange="markUnsaved()">
+            <option value="">Select city...</option>
+          </select>
+        </div>
+      </div>
+      <div class="location-selects" style="margin-top:16px;">
+        <div class="loc-group">
+          <span class="loc-label">AA Coordinator Name</span>
+          <input type="text" id="contact-name" placeholder="e.g. Bill W." oninput="filterName(this); markUnsaved()">
+        </div>
+        <div class="loc-group">
+          <span class="loc-label">AA Coordinator Phone</span>
+          <input type="tel" id="contact-phone" placeholder="(555) 555-5555" oninput="formatPhone(this); markUnsaved()">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MEN'S LIST — collapsible, open by default -->
+  <div class="card collapsible collapsed" id="card-men">
+    <div class="card-header men" onclick="toggleCard('card-men')">
+      <h2>Men's Volunteer List</h2>
+      <div class="badge">Men</div>
+      <span class="card-chevron">▼</span>
+    </div>
+    <div class="card-body">
+      <p class="hint">Add the phone numbers of male A.A. volunteers. Optionally add a name for your reference. All numbers will receive the group text when a men's request is submitted.</p>
+      <div class="col-labels">
+        <span class="col-phone">Phone Number</span>
+        <span class="col-name">Name (for A.A. Coordinator use only)</span>
+        <span class="col-del"></span>
+      </div>
+      <div class="phone-list" id="men-list"></div>
+      <button class="btn-add" onclick="addPhone('men')">+ Add another number</button>
+    </div>
+  </div>
+
+  <!-- WOMEN'S LIST — collapsible, open by default -->
+  <div class="card collapsible collapsed" id="card-women">
+    <div class="card-header women" onclick="toggleCard('card-women')">
+      <h2>Women's Volunteer List</h2>
+      <div class="badge">Women</div>
+      <span class="card-chevron">▼</span>
+    </div>
+    <div class="card-body">
+      <p class="hint">Add the phone numbers of female A.A. volunteers. All numbers will receive the group text when a women's request is submitted.</p>
+      <div class="col-labels">
+        <span class="col-phone">Phone Number</span>
+        <span class="col-name">Name (for A.A. Coordinator use only)</span>
+        <span class="col-del"></span>
+      </div>
+      <div class="phone-list" id="women-list"></div>
+      <button class="btn-add" onclick="addPhone('women')">+ Add another number</button>
+    </div>
+  </div>
+
+  <!-- TEXT MESSAGE TEMPLATE — removed from UI, hardcoded in JS (see SMS_TEMPLATE) -->
+
+  <!-- QR CODE — always open -->
+  <div class="card" id="card-qr">
+    <div class="card-header qr">
+      <h2>Facility Form QR Code</h2>
+    </div>
+    <div class="card-body">
+      <p class="hint">Save first, then generate the QR code. The QR now contains a permanent city URL — facility staff scan once and always get the latest volunteer list automatically.</p>
+      <button class="btn-generate-qr" onclick="generateQR()">⬡ Generate QR Code</button>
+      <div class="qr-output" id="qr-output">
+        <div class="qr-code-wrap">
+          <div id="qr-canvas"></div>
+        </div>
+        <div class="qr-url-label">Facility Form URL</div>
+        <div class="qr-url-box" id="qr-url-display"></div>
+        <div class="qr-btn-row">
+          <button class="btn-copy-url" onclick="copyQRUrl()">📋 Copy URL</button>
+          <button class="btn-copy-url" onclick="copyQRImage()">🖼 Copy QR</button>
+          <button class="btn-copy-url" onclick="shareQR()">📤 Share QR</button>
+          <button class="btn-copy-url" onclick="downloadQR()">⬇ Download QR</button>
+        </div>
+        <div class="cloud-status" id="cloud-status"></div>
+        <p class="qr-note">
+          This QR code is permanent — it points to a city URL that always loads the latest config from the cloud.
+          No need to reshare when the volunteer list changes. Just save and the update is live immediately.
+        </p>
+      </div>
+    </div>
+  </div>
+
+</div>
+<!-- SAVE BAR -->
+<div class="save-bar">
+  <span class="save-status" id="save-status">Unsaved changes</span>
+  <div style="display:flex;gap:12px;align-items:center;">
+    <button class="btn-save" onclick="saveConfig()">Save Configuration</button>
+  </div>
+</div>
+<script>
+  // ── Firebase ──────────────────────────────────────────
+  const firebaseConfig = {
+    apiKey: "AIzaSyCNcTgkO3IA9LrjOHGhhcgaDaXlgdlHUsg",
+    authDomain: "step-texter.firebaseapp.com",
+    projectId: "step-texter",
+    storageBucket: "step-texter.firebasestorage.app",
+    messagingSenderId: "658444063294",
+    appId: "1:658444063294:web:5cc90eeb7dca440394b76f"
+  };
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.firestore();
+
+  // ── Collapsible cards ─────────────────────────────────
+  function toggleCard(cardId) {
+    document.getElementById(cardId).classList.toggle('collapsed');
+  }
+
+  // ── District / City data ──────────────────────────────
+  const DISTRICTS = {
+    11: ['Billings','Garry Owen','Hardin','Huntley','Lodge Grass','Pryor','Roundup'],
+    12: ['Big Timber','Bridger','Columbus','Fromberg','Harlowton','Joliet','Laurel','Red Lodge'],
+    21: ['Culbertson','Glasgow','Plentywood','Poplar','Scoby','Winnett','Wolf Point'],
+    23: ['Crane','Fairview','Glendive','Savage','Sidney'],
+    31: ['Absarokee','Baker','Broadus','Busby','Colstrip','Crow Agency','Forsyth','Jordan','Lame Deer','Miles City','Terry'],
+    41: ['Fort Benton','Fort Shaw','Great Falls','Lewistown','Stanford'],
+    42: ['Browning','Chester','Choteau','Conrad','Cut Bank','Shelby','Valier'],
+    51: ['Box Elder','Chinook','Dodson','Fort Belknap','Harlem','Havre','Hays','Malta'],
+    61: ['Boulder','E. Helena','Elliston','Helena','Lincoln','Townsend','White Sulphur Springs'],
+    71: ['Anaconda','Butte','Deer Lodge','Dillon','Drummond','Hall','Jackson','Lima','Philipsburg','Sheridan','Twin Bridges','Warm Springs','Whitehall'],
+    72: ['Belgrade','Big Sky','Bozeman','Emigrant','Ennis','Gallatin Gateway','Gardiner','Livingston','Manhattan','Pony','Three Forks','Virginia City','West Yellowstone','Wilsall'],
+    81: ['Alberton','Arlee','Clinton','Frenchtown','Haugan','Hot Springs','Missoula','Noxon','Pablo','Plains','Polson','Ronan','Seeley Lake','St. Ignatius','St. Regis','Superior','Thompson Falls','Trout Creek'],
+    91: ['Big Fork','Columbia Falls','Coram','Eureka','Kalispell','Lakeside','Somers','West Glacier','Whitefish'],
+    93: ['Conner','Corvallis','Darby','Florence','Hamilton','Lolo','Stevensville','Victor']
+  };
+
+  function initLocationDropdowns(savedDistrict, savedCity) {
+    const distSel = document.getElementById('district-select');
+    Object.keys(DISTRICTS).sort((a,b) => Number(a)-Number(b)).forEach(d => {
+      const opt = document.createElement('option');
+      opt.value = d; opt.textContent = 'District ' + d;
+      if (String(savedDistrict) === String(d)) opt.selected = true;
+      distSel.appendChild(opt);
+    });
+    if (savedDistrict) populateCities(savedDistrict, savedCity);
+  }
+  function onDistrictChange() {
+    const d = document.getElementById('district-select').value;
+    populateCities(d, ''); markUnsaved();
+  }
+  function populateCities(district, selectedCity) {
+    const citySel = document.getElementById('city-select');
+    citySel.innerHTML = '<option value="">Select city...</option>';
+    citySel.disabled = !district;
+    if (!district || !DISTRICTS[district]) return;
+    DISTRICTS[district].forEach(city => {
+      const opt = document.createElement('option');
+      opt.value = city; opt.textContent = city;
+      if (city === selectedCity) opt.selected = true;
+      citySel.appendChild(opt);
+    });
+  }
+
+  // ── City key ──────────────────────────────────────────
+  function getCityKey() {
+    const city = document.getElementById('city-select').value;
+    if (!city) return '';
+    return city.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+  }
+
+  // ── State ─────────────────────────────────────────────
+  let menCount = 0, womenCount = 0, fieldCount = 0;
+
+  // ── Init ──────────────────────────────────────────────
+	if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+  window.addEventListener('DOMContentLoaded', () => {
+    loadConfig();
+    window.scrollTo(0, 0);
+    requestAnimationFrame(() => window.scrollTo(0, 0));
+  });
+  window.addEventListener('load', () => window.scrollTo(0, 0));
+
+  function getNamePlaceholder() {
+    return window.innerWidth <= 600 ? 'Name (optional — A.A. use only)' : 'Name (optional)';
+  }
+
+  function addPhone(group, phone = '', label = '') {
+    const list = document.getElementById(`${group}-list`);
+    const count = group === 'men' ? ++menCount : ++womenCount;
+    const row = document.createElement('div');
+    row.className = 'phone-row'; row.dataset.group = group; row.id = `${group}-row-${count}`;
+    row.innerHTML = `
+      <span class="num-label">${count}</span>
+      <div class="phone-fields">
+        <input type="tel" placeholder="(555) 555-5555" value="${phone}"
+          oninput="formatPhone(this); markUnsaved()" class="phone-input">
+        <input type="text" placeholder="${getNamePlaceholder()}" value="${label}"
+          oninput="filterName(this); markUnsaved()" class="label-input">
+      </div>
+      <button class="btn-remove" onclick="removeRow('${row.id}')" title="Remove">×</button>
+    `;
+    list.appendChild(row);
+    if (!phone) row.querySelector('input').focus();
+    renumberList(group); markUnsaved();
+  }
+
+  function removeRow(id) {
+    const el = document.getElementById(id);
+    if (el) { const group = el.dataset.group; el.remove(); renumberList(group || 'field'); markUnsaved(); }
+  }
+  function renumberList(group) {
+    if (group === 'field') return;
+    document.querySelectorAll(`#${group}-list .phone-row`).forEach((row, i) => {
+      row.querySelector('.num-label').textContent = i + 1;
+    });
+  }
+  function formatPhone(input) {
+    let v = input.value.replace(/\D/g, '').substring(0, 10);
+    if (v.length >= 7) v = `(${v.slice(0,3)}) ${v.slice(3,6)}-${v.slice(6)}`;
+    else if (v.length >= 4) v = `(${v.slice(0,3)}) ${v.slice(3)}`;
+    else if (v.length >= 1) v = `(${v}`;
+    input.value = v;
+  }
+  function filterName(input) { input.value = input.value.replace(/[0-9]/g, ''); }
+
+  // ── Patient Info Fields ───────────────────────────────
+  //
+  //   FIELDS ARE HARDCODED HERE.
+  //   The AA Coordinator no longer edits fields in the UI.
+  //
+  //   To add, remove, or rename a field, edit PATIENT_FIELDS below.
+  //   Each entry: { label, key, type, required }
+  //   Types: text | multiline | number | boolean | select
+  //   Keys must match tokens used in SMS_TEMPLATE above.
+  //
+  //   SYSTEM FIELDS (gender, requested) are always included
+  //   automatically by the facility form — do not add them here.
+  //
+  const PATIENT_FIELDS = [
+    { label: 'Facility Name',                     key: 'facility_name', type: 'text',      required: true  },
+    { label: 'Room Number',                       key: 'room_number',   type: 'number',    required: false },
+    { label: 'Patient First Name & Last Initial', key: 'patient_name',  type: 'text',      required: true  },
+    { label: 'Age',                               key: 'age',           type: 'number',    required: true  },
+    { label: 'Notes (if any)',                    key: 'notes',         type: 'multiline', required: false }
+  ];
+
+  function labelToKey(label) { return label.toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_|_$/g, ''); }
+  function addSystemField() {}
+  function addField() {}
+  function removeField() {}
+  function onLabelInput() {}
+  function onKeyInput() {}
+
+  // ── Text Message Template ─────────────────────────────
+  //
+  //   THE MESSAGE FORMAT IS HARDCODED HERE.
+  //   The AA Coordinator no longer edits this in the UI.
+  //
+  //   To change the message format, edit SMS_TEMPLATE below.
+  //   Tokens: {{field_key}} — replaced with form values.
+  //   Filters: {{field_key|upper}}, {{field_key|lower}}, {{field_key|capitalize}}
+  //   Built-in tokens: {{gender}}, {{date}}, {{time}}
+  //   The {{notes}} token auto-prefixes "Notes: " when populated;
+  //   the entire line is removed when notes is empty.
+  //   \n = new line. \n\n = blank line between sections.
+  //
+  const SMS_TEMPLATE =
+    '12TH STEP REQUEST...\n' +
+    '\n' +
+    'Facility: {{facility_name}}\n' +
+    'Room: {{room_number}}\n' +
+    'Name: {{patient_name|upper}}\n' +
+    'Info: {{age}} yr old {{gender}}\n' +
+    '\n' +
+    '{{notes}}';
+
+  // ── Token chips (no-op — TMT card removed) ───────────
+  function updateTokens() {}
+  function insertToken() {}
+
+  // ── Save / Load ───────────────────────────────────────
+  function saveConfig() {
+    const config = {
+      district: document.getElementById('district-select').value,
+      city: document.getElementById('city-select').value,
+      contact: document.getElementById('contact-name').value.trim(),
+      contactPhone: document.getElementById('contact-phone').value.trim(),
+      men: getPhoneList('men'), women: getPhoneList('women'),
+      fields: getFieldList(),
+      template: SMS_TEMPLATE,
+      listUpdatedDate: new Date().toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: '2-digit' })
+    };
+    localStorage.setItem('12step-config', JSON.stringify(config));
+    const status = document.getElementById('save-status');
+    status.textContent = 'Saving...'; status.className = 'save-status';
+    saveToFirestore(config);
+    generateQR(true);
+  }
+
+  async function saveToFirestore(config) {
+    const cityKey = getCityKey();
+    const status = document.getElementById('save-status');
+    const cloudStatus = document.getElementById('cloud-status');
+    if (!cityKey) {
+      status.textContent = 'Saved locally (no city selected — not synced to cloud)';
+      status.className = 'save-status'; return;
+    }
+    try {
+      await db.collection('configs').doc(cityKey).set(config);
+      status.textContent = 'Saved ✓ (local + cloud)'; status.className = 'save-status saved';
+      if (cloudStatus) { cloudStatus.textContent = '☁ Config synced to cloud for city key: ' + cityKey; cloudStatus.className = 'cloud-status ok'; }
+    } catch(e) {
+      console.error('Firestore save failed:', e);
+      status.textContent = 'Saved locally — cloud sync failed'; status.className = 'save-status';
+      if (cloudStatus) { cloudStatus.textContent = '⚠ Cloud sync failed: ' + e.message; cloudStatus.className = 'cloud-status err'; }
+    }
+  }
+
+  function loadConfig() {
+    const raw = localStorage.getItem('12step-config');
+    const MIN_PHONES = 10;
+    if (raw) {
+      const config = JSON.parse(raw);
+      initLocationDropdowns(config.district || '', config.city || '');
+      if (config.contact) document.getElementById('contact-name').value = config.contact;
+      if (config.contactPhone) document.getElementById('contact-phone').value = config.contactPhone;
+      const menList = config.men || [], womenList = config.women || [];
+      menList.forEach(e => addPhone('men', e.phone, e.label));
+      womenList.forEach(e => addPhone('women', e.phone, e.label));
+      for (let i = menList.length; i < MIN_PHONES; i++) addPhone('men');
+      for (let i = womenList.length; i < MIN_PHONES; i++) addPhone('women');
+      const status = document.getElementById('save-status');
+      status.textContent = 'Configuration loaded'; status.className = 'save-status saved';
+    } else {
+      initLocationDropdowns('', '');
+      for (let i = 0; i < MIN_PHONES; i++) addPhone('men');
+      for (let i = 0; i < MIN_PHONES; i++) addPhone('women');
+    }
+  }
+
+  function getPhoneList(group) {
+    return Array.from(document.querySelectorAll(`#${group}-list .phone-row`)).map(row => ({
+      phone: row.querySelector('.phone-input').value,
+      label: row.querySelector('.label-input').value
+    })).filter(e => e.phone.trim());
+  }
+  function getFieldList() { return PATIENT_FIELDS; }
+  function markUnsaved() {
+    const status = document.getElementById('save-status');
+    status.textContent = 'Unsaved changes'; status.className = 'save-status';
+  }
+
+  // ── QR Code ───────────────────────────────────────────
+  function buildFacilityURL() {
+    const base = window.location.href.split('?')[0]
+      .replace(/sms-coordinator-setup[^/]*\.html/, 'sms-facility-form-v10-fire.html')
+      .replace(/coordinator-setup[^/]*\.html/, 'sms-facility-form-v10-fire.html');
+    const cityKey = getCityKey();
+    if (cityKey) return base + '?city=' + cityKey;
+    const config = buildConfigForQR();
+    return base + '?config=' + encodeConfig(config);
+  }
+  function buildConfigForQR() {
+    const men = getPhoneList('men').map(v => v.phone.replace(/\D/g, '')).filter(d => d.length >= 10);
+    const women = getPhoneList('women').map(v => v.phone.replace(/\D/g, '')).filter(d => d.length >= 10);
+    return {
+      district: document.getElementById('district-select').value,
+      city: document.getElementById('city-select').value,
+      contact: document.getElementById('contact-name').value.trim(),
+      contactPhone: document.getElementById('contact-phone').value.trim(),
+      men, women, fields: getFieldList(),
+      template: SMS_TEMPLATE,
+      listUpdatedDate: new Date().toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: '2-digit' })
+    };
+  }
+  function encodeConfig(config) {
+    const b64 = btoa(unescape(encodeURIComponent(JSON.stringify(config))));
+    return b64.replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '');
+  }
+  function generateQR(silent = false) {
+    const cityKey = getCityKey();
+    if (!cityKey && !silent) { alert('Please select a city before generating the QR code.'); return; }
+    const url = buildFacilityURL();
+    const canvas = document.getElementById('qr-canvas');
+    canvas.innerHTML = '';
+    new QRCode(canvas, { text: url, width: 380, height: 380, colorDark: '#1c1c1c', colorLight: '#ffffff', correctLevel: QRCode.CorrectLevel.L });
+    document.getElementById('qr-url-display').textContent = url;
+    document.getElementById('qr-output').classList.add('visible');
+    if (!silent) document.getElementById('qr-output').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+  async function copyQRImage() {
+    const qrCanvas = document.querySelector('#qr-canvas canvas');
+    const qrImg = document.querySelector('#qr-canvas img');
+    const btn = document.querySelector('[onclick="copyQRImage()"]');
+    try {
+      let blob;
+      if (qrCanvas) blob = await new Promise(res => qrCanvas.toBlob(res, 'image/png'));
+      else if (qrImg) blob = await (await fetch(qrImg.src)).blob();
+      if (!blob) throw new Error('No QR image found');
+      await navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })]);
+      btn.textContent = '✓ Copied!';
+      setTimeout(() => btn.textContent = '🖼 Copy QR', 2000);
+    } catch(e) {
+      alert('Copy not supported in this browser. Use Download QR instead.');
+    }
+  }
+  async function shareQR() {
+    const qrCanvas = document.querySelector('#qr-canvas canvas');
+    const qrImg = document.querySelector('#qr-canvas img');
+    if (!navigator.share) { alert('Share not supported in this browser. Use Download QR instead.'); return; }
+    try {
+      let blob;
+      if (qrCanvas) blob = await new Promise(res => qrCanvas.toBlob(res, 'image/png'));
+      else if (qrImg) blob = await (await fetch(qrImg.src)).blob();
+      const cityKey = getCityKey() || 'unknown';
+      if (blob) await navigator.share({ files: [new File([blob], '12step-texter-' + cityKey + '-qr.png', { type: 'image/png' })], title: '12th Step Texter QR Code' });
+    } catch(e) {}
+  }
+  function downloadQR() {
+    const qrCanvas = document.querySelector('#qr-canvas canvas');
+    const qrImg = document.querySelector('#qr-canvas img');
+    const dataURL = qrCanvas ? qrCanvas.toDataURL('image/png') : (qrImg ? qrImg.src : null);
+    if (!dataURL) return;
+    const cityKey = getCityKey() || 'unknown';
+    const a = document.createElement('a'); a.href = dataURL; a.download = '12step-texter-' + cityKey + '-qr.png'; a.click();
+  }
+  function copyQRUrl() {
+    const url = document.getElementById('qr-url-display').textContent;
+    navigator.clipboard.writeText(url).then(() => {
+      const btn = document.querySelector('.btn-copy-url');
+      btn.textContent = '✓ Copied!';
+      setTimeout(() => btn.textContent = '📋 Copy URL', 2000);
+    }).catch(() => alert('URL: ' + url));
+  }
+</script>
+</body>
+</html>
