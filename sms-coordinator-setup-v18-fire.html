@@ -711,7 +711,8 @@
     const qrImg = document.querySelector('#qr-canvas img');
     const dataURL = qrCanvas ? qrCanvas.toDataURL('image/png') : (qrImg ? qrImg.src : null);
     if (!dataURL) return;
-    const a = document.createElement('a'); a.href = dataURL; a.download = '12step-texter-qr.png'; a.click();
+    const cityKey = getCityKey() || 'unknown';
+    const a = document.createElement('a'); a.href = dataURL; a.download = '12step-texter-' + cityKey + '-qr.png'; a.click();
   }
   function copyQRUrl() {
     const url = document.getElementById('qr-url-display').textContent;
