@@ -703,7 +703,8 @@
       let blob;
       if (qrCanvas) blob = await new Promise(res => qrCanvas.toBlob(res, 'image/png'));
       else if (qrImg) blob = await (await fetch(qrImg.src)).blob();
-      if (blob) await navigator.share({ files: [new File([blob], '12step-texter-qr.png', { type: 'image/png' })], title: '12th Step Texter QR Code' });
+      const cityKey = getCityKey() || 'unknown';
+      if (blob) await navigator.share({ files: [new File([blob], '12step-texter-' + cityKey + '-qr.png', { type: 'image/png' })], title: '12th Step Texter QR Code' });
     } catch(e) {}
   }
   function downloadQR() {
