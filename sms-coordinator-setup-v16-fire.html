@@ -6,6 +6,8 @@
 <title>12th Step Texter — Coordinator Setup</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Source+Sans+3:wght@300;400;600&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <style>
   :root {
     --cream: #f5f0e8;
@@ -21,9 +23,7 @@
     --women-light: #f4e8ed;
     --danger: #8b2020;
   }
-
   * { box-sizing: border-box; margin: 0; padding: 0; }
-
   body {
     background-color: var(--cream);
     color: var(--ink);
@@ -32,8 +32,6 @@
     min-height: 100vh;
     padding: 0 0 80px;
   }
-
-  /* Header */
   header {
     background: var(--ink);
     color: var(--cream);
@@ -43,14 +41,12 @@
     gap: 16px;
     border-bottom: 4px solid var(--accent);
   }
-
   header h1 {
     font-family: 'Playfair Display', serif;
     font-size: 1.75rem;
     font-weight: 700;
     letter-spacing: -0.02em;
   }
-
   header span {
     font-size: 0.85rem;
     font-weight: 300;
@@ -58,8 +54,6 @@
     letter-spacing: 0.12em;
     text-transform: uppercase;
   }
-
-  /* Layout */
   .container {
     max-width: 780px;
     margin: 0 auto;
@@ -68,15 +62,12 @@
     flex-direction: column;
     gap: 40px;
   }
-
-  /* Section card */
   .card {
     background: var(--paper);
     border: 1px solid var(--rule);
     border-radius: 2px;
     overflow: hidden;
   }
-
   .card-header {
     padding: 18px 28px 16px;
     display: flex;
@@ -84,26 +75,22 @@
     gap: 12px;
     border-bottom: 1px solid var(--rule);
   }
-
   .card-header.men { background: var(--men-light); border-left: 5px solid var(--men); }
   .card-header.women { background: var(--women-light); border-left: 5px solid var(--women); }
   .card-header.fields { background: var(--accent-light); border-left: 5px solid var(--accent); }
   .card-header.template { background: #f0ede8; border-left: 5px solid #8b7040; }
   .card-header.qr { background: #ede8f0; border-left: 5px solid #5a3d7a; }
   .card-header.location { background: #e8f0f4; border-left: 5px solid #1e5f7a; }
-
   .location-selects {
     display: flex;
     gap: 20px;
   }
-
   .loc-group {
     display: flex;
     flex-direction: column;
     gap: 6px;
     flex: 1;
   }
-
   .loc-label {
     font-size: 0.7rem;
     font-weight: 600;
@@ -111,17 +98,14 @@
     text-transform: uppercase;
     color: var(--muted);
   }
-
   @media (max-width: 600px) {
     .location-selects { flex-direction: column; gap: 12px; }
   }
-
   .card-header h2 {
     font-family: 'Playfair Display', serif;
     font-size: 1.15rem;
     font-weight: 500;
   }
-
   .card-header .badge {
     margin-left: auto;
     font-size: 0.72rem;
@@ -131,41 +115,33 @@
     padding: 3px 8px;
     border-radius: 20px;
   }
-
   .men .badge { background: var(--men); color: white; }
   .women .badge { background: var(--women); color: white; }
-
   .card-body {
     padding: 24px 28px;
   }
-
   .hint {
     font-size: 0.82rem;
     color: var(--muted);
     margin-bottom: 18px;
     line-height: 1.5;
   }
-
-  /* Phone number list */
   .phone-list {
     display: flex;
     flex-direction: column;
     gap: 10px;
     margin-bottom: 14px;
   }
-
   .phone-row {
     display: flex;
     gap: 10px;
     align-items: center;
     animation: slideIn 0.18s ease;
   }
-
   @keyframes slideIn {
     from { opacity: 0; transform: translateY(-6px); }
     to { opacity: 1; transform: translateY(0); }
   }
-
   .phone-row .num-label {
     font-size: 0.72rem;
     font-weight: 600;
@@ -175,7 +151,6 @@
     flex-shrink: 0;
     padding-top: 2px;
   }
-
   input[type="tel"], input[type="text"], textarea, select {
     background: white;
     border: 1px solid var(--rule);
@@ -188,22 +163,18 @@
     transition: border-color 0.15s;
     width: 100%;
   }
-
   input[type="tel"]:focus, input[type="text"]:focus, textarea:focus, select:focus {
     outline: none;
     border-color: var(--accent);
     box-shadow: 0 0 0 3px rgba(45,90,61,0.08);
   }
-
   .phone-fields {
     flex: 1;
     display: flex;
     gap: 10px;
   }
-
   .phone-fields .phone-input { flex: 0 0 160px; }
   .phone-fields .label-input { flex: 1; }
-
   .btn-remove {
     background: none;
     border: 1px solid var(--rule);
@@ -220,9 +191,7 @@
     align-items: center;
     justify-content: center;
   }
-
   .btn-remove:hover { border-color: var(--danger); color: var(--danger); background: #fff5f5; }
-
   .btn-add {
     background: none;
     border: 1px dashed var(--rule);
@@ -236,16 +205,13 @@
     width: 100%;
     text-align: left;
   }
-
   .btn-add:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-light); }
-
   .col-labels {
     display: flex;
     gap: 10px;
     margin-bottom: 6px;
     padding-left: 34px;
   }
-
   .col-labels span {
     font-size: 0.7rem;
     font-weight: 600;
@@ -253,32 +219,25 @@
     text-transform: uppercase;
     color: var(--muted);
   }
-
   .col-labels .col-phone { flex: 0 0 160px; }
   .col-labels .col-name  { flex: 1; }
   .col-labels .col-del   { flex: 0 0 32px; }
-
-  /* Custom fields */
   .fields-list {
     display: flex;
     flex-direction: column;
     gap: 12px;
     margin-bottom: 14px;
   }
-
   .field-row {
     display: flex;
     gap: 10px;
     align-items: center;
     animation: slideIn 0.18s ease;
   }
-
   .field-row input { flex: 1; }
-
   .field-row select {
     flex: 0 0 130px;
   }
-
   .field-row .required-toggle {
     flex-shrink: 0;
     display: flex;
@@ -289,19 +248,16 @@
     cursor: pointer;
     white-space: nowrap;
   }
-
   .required-toggle input[type="checkbox"] {
     width: auto;
     cursor: pointer;
     accent-color: var(--accent);
   }
-
   .field-col-labels {
     display: flex;
     gap: 10px;
     margin-bottom: 6px;
   }
-
   .field-col-labels span {
     font-size: 0.7rem;
     font-weight: 600;
@@ -309,13 +265,11 @@
     text-transform: uppercase;
     color: var(--muted);
   }
-
   .field-col-labels .col-name { flex: 1; }
   .field-col-labels .col-key  { flex: 0 0 150px; font-family: monospace; }
   .field-col-labels .col-type { flex: 0 0 110px; }
   .field-col-labels .col-req  { flex: 0 0 60px; }
   .field-col-labels .col-del  { flex: 0 0 32px; }
-
   .key-input {
     font-family: 'Source Code Pro', 'Courier New', monospace !important;
     font-size: 0.8rem !important;
@@ -323,29 +277,23 @@
     background: #f0ede6 !important;
     flex: 0 0 150px !important;
   }
-
   .key-input.locked { opacity: 0.7; }
-
-  /* System field rows */
   .field-row.system-field {
     background: #f0ede6;
     border: 1px solid var(--rule);
     border-radius: 2px;
     padding: 6px 8px;
   }
-
   .field-row.system-field input[type="text"] {
     background: transparent;
     border-color: transparent;
     font-weight: 400;
     color: var(--ink);
   }
-
   .field-row.system-field input[type="text"]:focus {
     background: white;
     border-color: var(--accent);
   }
-
   .field-row.system-field .system-type {
     flex: 0 0 130px;
     font-size: 0.82rem;
@@ -355,7 +303,6 @@
     display: flex;
     align-items: center;
   }
-
   .field-row.system-field .system-req {
     flex: 0 0 68px;
     font-size: 0.78rem;
@@ -364,7 +311,6 @@
     display: flex;
     align-items: center;
   }
-
   .lock-btn {
     width: 32px;
     height: 32px;
@@ -375,12 +321,9 @@
     color: var(--muted);
     flex-shrink: 0;
   }
-
-  /* Template */
   .template-area {
     position: relative;
   }
-
   textarea {
     min-height: 120px;
     resize: vertical;
@@ -388,14 +331,12 @@
     font-family: 'Source Code Pro', 'Courier New', monospace;
     font-size: 0.85rem;
   }
-
   .token-chips {
     display: flex;
     flex-wrap: wrap;
     gap: 6px;
     margin-top: 10px;
   }
-
   .token-chip {
     background: var(--ink);
     color: var(--cream);
@@ -407,16 +348,12 @@
     transition: background 0.15s;
     border: none;
   }
-
   .token-chip:hover { background: var(--accent); }
-
   .token-hint {
     font-size: 0.78rem;
     color: var(--muted);
     margin-top: 8px;
   }
-
-  /* QR section */
   .btn-generate-qr {
     background: #5a3d7a;
     color: white;
@@ -432,15 +369,11 @@
     transition: background 0.15s;
     margin-bottom: 20px;
   }
-
   .btn-generate-qr:hover { background: #3d2855; }
-
   .qr-output {
     display: none;
   }
-
   .qr-output.visible { display: block; }
-
   .qr-code-wrap {
     display: inline-block;
     padding: 16px;
@@ -449,7 +382,6 @@
     border-radius: 2px;
     margin-bottom: 16px;
   }
-
   .qr-url-label {
     font-size: 0.72rem;
     font-weight: 600;
@@ -458,7 +390,6 @@
     color: var(--muted);
     margin-bottom: 6px;
   }
-
   .qr-url-box {
     background: #f0ede6;
     border: 1px solid var(--rule);
@@ -471,7 +402,6 @@
     line-height: 1.5;
     margin-bottom: 10px;
   }
-
   .btn-copy-url {
     background: none;
     border: 1px solid var(--rule);
@@ -483,9 +413,7 @@
     border-radius: 2px;
     transition: all 0.15s;
   }
-
   .btn-copy-url:hover { border-color: var(--accent); color: var(--accent); }
-
   .qr-note {
     font-size: 0.78rem;
     color: var(--muted);
@@ -494,8 +422,15 @@
     border-top: 1px solid var(--rule);
     padding-top: 14px;
   }
-
-  /* Save bar */
+  .cloud-status {
+    font-size: 0.78rem;
+    margin-top: 8px;
+    padding: 6px 10px;
+    border-radius: 2px;
+    display: none;
+  }
+  .cloud-status.ok { display: block; color: var(--accent); background: var(--accent-light); }
+  .cloud-status.err { display: block; color: var(--danger); background: #fff5f5; }
   .save-bar {
     position: sticky;
     bottom: 0;
@@ -507,15 +442,12 @@
     gap: 20px;
     border-top: 3px solid var(--accent);
   }
-
   .save-status {
     font-size: 0.82rem;
     color: #a09880;
     font-weight: 300;
   }
-
   .save-status.saved { color: #6daa80; }
-
   .btn-save {
     background: var(--accent);
     color: white;
@@ -530,16 +462,12 @@
     border-radius: 2px;
     transition: background 0.15s;
   }
-
   .btn-save:hover { background: #245030; }
-
   .divider {
     width: 1px;
     height: 28px;
     background: #3a3a3a;
   }
-
-  /* Responsive */
   @media (max-width: 600px) {
     header { padding: 20px; flex-direction: column; gap: 4px; }
     .card-body { padding: 18px 16px; }
@@ -553,14 +481,11 @@
 </style>
 </head>
 <body>
-
 <header>
   <h1>12th Step Texter</h1>
   <span>Coordinator Setup</span>
 </header>
-
 <div class="container">
-
   <!-- LOCATION -->
   <div class="card">
     <div class="card-header location">
@@ -582,7 +507,6 @@
           </select>
         </div>
       </div>
-
       <div class="location-selects" style="margin-top:16px;">
         <div class="loc-group">
           <span class="loc-label">AA Coordinator Name</span>
@@ -597,7 +521,6 @@
       </div>
     </div>
   </div>
-
   <!-- MEN'S LIST -->
   <div class="card">
     <div class="card-header men">
@@ -608,14 +531,13 @@
       <p class="hint">Add the phone numbers of male A.A. volunteers. Optionally add a name for your reference. All numbers will receive the group text when a men's request is submitted.</p>
       <div class="col-labels">
         <span class="col-phone">Phone Number</span>
-        <span class="col-name">Name (optional)</span>
+        <span class="col-name">Name (for A.A. Coordinator use only)</span>
         <span class="col-del"></span>
       </div>
       <div class="phone-list" id="men-list"></div>
       <button class="btn-add" onclick="addPhone('men')">+ Add another number</button>
     </div>
   </div>
-
   <!-- WOMEN'S LIST -->
   <div class="card">
     <div class="card-header women">
@@ -626,14 +548,13 @@
       <p class="hint">Add the phone numbers of female A.A. volunteers. All numbers will receive the group text when a women's request is submitted.</p>
       <div class="col-labels">
         <span class="col-phone">Phone Number</span>
-        <span class="col-name">Name (optional)</span>
+        <span class="col-name">Name (for A.A. Coordinator use only)</span>
         <span class="col-del"></span>
       </div>
       <div class="phone-list" id="women-list"></div>
       <button class="btn-add" onclick="addPhone('women')">+ Add another number</button>
     </div>
   </div>
-
   <!-- PATIENT INFO FIELDS -->
   <div class="card">
     <div class="card-header fields">
@@ -641,7 +562,6 @@
     </div>
     <div class="card-body">
       <p class="hint">Configure what the facility form will ask. The first two fields are system fields — always present, label editable, cannot be deleted or retyped. Add custom fields below them.</p>
-
       <div class="field-col-labels">
         <span class="col-name">Field Label</span>
         <span class="col-key">Key (token)</span>
@@ -653,7 +573,6 @@
       <button class="btn-add" onclick="addField()">+ Add another field</button>
     </div>
   </div>
-
   <!-- TEXT TEMPLATE -->
   <div class="card">
     <div class="card-header template">
@@ -668,17 +587,14 @@
       <p class="token-hint">↑ Click a token to insert it at the cursor position</p>
     </div>
   </div>
-
   <!-- QR CODE GENERATOR -->
   <div class="card">
     <div class="card-header qr">
       <h2>Facility Form QR Code</h2>
     </div>
     <div class="card-body">
-      <p class="hint">Generate a QR code to share with facility staff. Scanning it opens the request form on their phone with all volunteer numbers pre-loaded. Regenerate and reshare whenever your volunteer list changes.</p>
-
+      <p class="hint">Save first, then generate the QR code. The QR now contains a permanent city URL — facility staff scan once and always get the latest volunteer list automatically.</p>
       <button class="btn-generate-qr" onclick="generateQR()">⬡ Generate QR Code</button>
-
       <div class="qr-output" id="qr-output">
         <div class="qr-code-wrap">
           <div id="qr-canvas"></div>
@@ -687,16 +603,15 @@
         <div class="qr-url-box" id="qr-url-display"></div>
         <button class="btn-copy-url" onclick="copyQRUrl()">📋 Copy URL</button>
         <button class="btn-copy-url" onclick="shareQR()" style="margin-left:8px">📤 Share / Download QR</button>
+        <div class="cloud-status" id="cloud-status"></div>
         <p class="qr-note">
-          Share this QR code with facility staff — print it, text it, or email it as an image.
-          When the volunteer list changes, click Generate again and reshare the new code.
+          This QR code is permanent — it points to a city URL that always loads the latest config from the cloud.
+          No need to reshare when the volunteer list changes. Just save and the update is live immediately.
         </p>
       </div>
     </div>
   </div>
-
 </div>
-
 <!-- SAVE BAR -->
 <div class="save-bar">
   <span class="save-status" id="save-status">Unsaved changes</span>
@@ -704,8 +619,19 @@
     <button class="btn-save" onclick="saveConfig()">Save Configuration</button>
   </div>
 </div>
-
 <script>
+  // ── Firebase ──────────────────────────────────────────
+  const firebaseConfig = {
+    apiKey: "AIzaSyCNcTgkO3IA9LrjOHGhhcgaDaXlgdlHUsg",
+    authDomain: "step-texter.firebaseapp.com",
+    projectId: "step-texter",
+    storageBucket: "step-texter.firebasestorage.app",
+    messagingSenderId: "658444063294",
+    appId: "1:658444063294:web:5cc90eeb7dca440394b76f"
+  };
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.firestore();
+
   // ── District / City data ──────────────────────────────
   const DISTRICTS = {
     11: ['Billings','Garry Owen','Hardin','Huntley','Lodge Grass','Pryor','Roundup'],
@@ -735,13 +661,11 @@
     });
     if (savedDistrict) populateCities(savedDistrict, savedCity);
   }
-
   function onDistrictChange() {
     const d = document.getElementById('district-select').value;
     populateCities(d, '');
     markUnsaved();
   }
-
   function populateCities(district, selectedCity) {
     const citySel = document.getElementById('city-select');
     citySel.innerHTML = '<option value="">Select city...</option>';
@@ -756,6 +680,13 @@
     });
   }
 
+  // ── City key for Firestore doc ID ─────────────────────
+  function getCityKey() {
+    const city = document.getElementById('city-select').value;
+    if (!city) return '';
+    return city.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+  }
+
   // ── State ─────────────────────────────────────────────
   let menCount = 0;
   let womenCount = 0;
@@ -763,11 +694,14 @@
 
   // ── Init ──────────────────────────────────────────────
   window.addEventListener('DOMContentLoaded', () => {
+		history.scrollRestoration = 'manual'; window.scrollTo(0, 0);
     loadConfig();
-    markUnsaved();
   });
 
-  // ── Phone lists ───────────────────────────────────────
+  function getNamePlaceholder() {
+    return window.innerWidth <= 600 ? 'Name (optional — A.A. use only)' : 'Name (optional)';
+  }
+
   function addPhone(group, phone = '', label = '') {
     const list = document.getElementById(`${group}-list`);
     const count = group === 'men' ? ++menCount : ++womenCount;
@@ -780,7 +714,7 @@
       <div class="phone-fields">
         <input type="tel" placeholder="(555) 555-5555" value="${phone}"
           oninput="formatPhone(this); markUnsaved()" class="phone-input">
-        <input type="text" placeholder="Name (optional — A.A. Coordinator use only)" value="${label}"
+        <input type="text" placeholder="${getNamePlaceholder()}" value="${label}"
           oninput="filterName(this); markUnsaved()" class="label-input">
       </div>
       <button class="btn-remove" onclick="removeRow('${row.id}')" title="Remove">×</button>
@@ -821,7 +755,7 @@
     input.value = input.value.replace(/[0-9]/g, '');
   }
 
-  // ── Custom fields ─────────────────────────────────────────────
+  // ── Custom fields ─────────────────────────────────────
   const SYSTEM_FIELDS = [
     { key: 'gender',    label: 'Gender',                          type: 'Male / Female selector',   note: 'Routes to correct volunteer list' },
     { key: 'requested', label: 'Patient has requested AA contact', type: 'Required confirmation',    note: 'Hard gate — form cannot submit without this' }
@@ -901,11 +835,10 @@
     if (el) { el.remove(); updateTokens(); markUnsaved(); }
   }
 
-  // ── Token chips ───────────────────────────────────────────────
+  // ── Token chips ───────────────────────────────────────
   function updateTokens() {
     const chips = document.getElementById('token-chips');
     chips.innerHTML = '';
-
     const builtIn = ['{{gender}}', '{{date}}', '{{time}}'];
     builtIn.forEach(token => {
       const btn = document.createElement('button');
@@ -914,7 +847,6 @@
       btn.onclick = () => insertToken(token);
       chips.appendChild(btn);
     });
-
     const fieldRows2 = document.querySelectorAll('#fields-list .field-row:not(.system-field)');
     fieldRows2.forEach(row => {
       const label = row.querySelector('.label-field') ? row.querySelector('.label-field').value.trim() : '';
@@ -941,7 +873,7 @@
     markUnsaved();
   }
 
-  // ── Save / Load ───────────────────────────────────────────────
+  // ── Save / Load ───────────────────────────────────────
   function saveConfig() {
     const systemLabels = {};
     document.querySelectorAll('.system-field[data-system]').forEach(row => {
@@ -960,25 +892,46 @@
       listUpdatedDate: new Date().toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: '2-digit' })
     };
     localStorage.setItem('12step-config', JSON.stringify(config));
-
     const status = document.getElementById('save-status');
-    status.textContent = 'Saved ✓';
-    status.className = 'save-status saved';
-    setTimeout(() => {
-      status.textContent = 'All changes saved';
-    }, 2000);
-
-    // Auto-generate QR on every save
+    status.textContent = 'Saving...';
+    status.className = 'save-status';
+    saveToFirestore(config);
     generateQR(true);
+  }
+
+  async function saveToFirestore(config) {
+    const cityKey = getCityKey();
+    const status = document.getElementById('save-status');
+    const cloudStatus = document.getElementById('cloud-status');
+    if (!cityKey) {
+      status.textContent = 'Saved locally (no city selected — not synced to cloud)';
+      status.className = 'save-status';
+      return;
+    }
+    try {
+      await db.collection('configs').doc(cityKey).set(config);
+      status.textContent = 'Saved ✓ (local + cloud)';
+      status.className = 'save-status saved';
+      if (cloudStatus) {
+        cloudStatus.textContent = '☁ Config synced to cloud for city key: ' + cityKey;
+        cloudStatus.className = 'cloud-status ok';
+      }
+    } catch(e) {
+      console.error('Firestore save failed:', e);
+      status.textContent = 'Saved locally — cloud sync failed';
+      status.className = 'save-status';
+      if (cloudStatus) {
+        cloudStatus.textContent = '⚠ Cloud sync failed: ' + e.message;
+        cloudStatus.className = 'cloud-status err';
+      }
+    }
   }
 
   function loadConfig() {
     const raw = localStorage.getItem('12step-config');
     const MIN_PHONES = 10;
-
     addSystemField('requested', 'Patient has requested AA contact');
     addSystemField('gender', 'Gender');
-
     if (raw) {
       const config = JSON.parse(raw);
       initLocationDropdowns(config.district || '', config.city || '');
@@ -1043,10 +996,21 @@
     status.className = 'save-status';
   }
 
-  // ── QR Code generation ────────────────────────────────────────
+  // ── QR Code generation ────────────────────────────────
+  function buildFacilityURL() {
+    const base = window.location.href
+      .split('?')[0]
+      .replace(/sms-coordinator-setup[^/]*\.html/, 'sms-facility-form-v10-fire.html')
+      .replace(/coordinator-setup[^/]*\.html/, 'sms-facility-form-v10-fire.html');
+    const cityKey = getCityKey();
+    if (cityKey) return base + '?city=' + cityKey;
+    // Fallback: encode full config if no city selected
+    const config = buildConfigForQR();
+    const encoded = encodeConfig(config);
+    return base + '?config=' + encoded;
+  }
+
   function buildConfigForQR() {
-    // Lean payload — strip volunteer names, systemLabels, format phones as raw digits
-    // Facility form only needs digits, fields, and template
     const men = getPhoneList('men')
       .map(v => v.phone.replace(/\D/g, ''))
       .filter(d => d.length >= 10);
@@ -1068,35 +1032,19 @@
 
   function encodeConfig(config) {
     const json = JSON.stringify(config);
-    // Handle Unicode safely, then base64-encode URL-safe
     const b64 = btoa(unescape(encodeURIComponent(json)));
     return b64.replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '');
   }
 
-  function buildFacilityURL(encoded) {
-    const base = window.location.href
-      .split('?')[0]
-      .replace(/sms-coordinator-setup[^/]*\.html/, 'sms-facility-form-v9.html')
-      .replace(/coordinator-setup[^/]*\.html/, 'sms-facility-form-v9.html');
-    return base + '?config=' + encoded;
-  }
-
   function generateQR(silent = false) {
-    if (!silent) saveConfig();
-
-    const config = buildConfigForQR();
-
-    if (config.men.length === 0 && config.women.length === 0) {
-      if (!silent) alert('Please add at least one volunteer phone number before generating the QR code.');
+    const cityKey = getCityKey();
+    if (!cityKey && !silent) {
+      alert('Please select a city before generating the QR code.');
       return;
     }
-
-    const encoded = encodeConfig(config);
-    const url = buildFacilityURL(encoded);
-
+    const url = buildFacilityURL();
     const canvas = document.getElementById('qr-canvas');
     canvas.innerHTML = '';
-
     new QRCode(canvas, {
       text: url,
       width: 380,
@@ -1105,10 +1053,8 @@
       colorLight: '#ffffff',
       correctLevel: QRCode.CorrectLevel.L
     });
-
     document.getElementById('qr-url-display').textContent = url;
     document.getElementById('qr-output').classList.add('visible');
-
     if (!silent) {
       document.getElementById('qr-output').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     }
@@ -1117,8 +1063,6 @@
   async function shareQR() {
     const qrImg = document.querySelector('#qr-canvas img');
     const qrCanvas = document.querySelector('#qr-canvas canvas');
-
-    // Try Web Share API first (mobile — can share directly to Messages, etc.)
     if (navigator.share) {
       try {
         let blob;
@@ -1135,8 +1079,6 @@
         }
       } catch(e) { /* fall through to download */ }
     }
-
-    // Fallback: download as PNG
     let dataURL;
     if (qrCanvas) dataURL = qrCanvas.toDataURL('image/png');
     else if (qrImg) dataURL = qrImg.src;
@@ -1158,6 +1100,5 @@
     });
   }
 </script>
-
 </body>
 </html>
