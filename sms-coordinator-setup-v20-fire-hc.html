@@ -65,7 +65,7 @@
   }
   .men .badge { background: var(--men); color: white; }
   .women .badge { background: var(--women); color: white; }
-  .location .badge { background: #bda177; color: white; max-width: 260px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; display: inline-flex; align-items: center; line-height: 1; padding: 3px 10px; }
+  .location .badge { background: #bda177; color: white; max-width: 260px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; display: inline-flex; align-items: center; line-height: 1; padding: 3px 10px; gap: 5px; }
   .location .badge:empty { display: none; }
   .card-chevron {
     margin-left: auto;
@@ -317,7 +317,7 @@
     const city = document.getElementById('city-select').value;
     const badge = document.getElementById('location-badge');
     if (!badge) return;
-    if (district && city) badge.innerHTML = 'District ' + district + ' <span style="font-size:1.4em;position:relative;top:-0.08em">›</span> ' + city;
+    if (district && city) badge.innerHTML = '<span>' + 'District ' + district + '</span><span style="font-size:1.4em;position:relative;top:-0.08em">›</span><span>' + city + '</span>';
     else if (district) badge.textContent = 'District ' + district;
     else badge.textContent = '';
   }
