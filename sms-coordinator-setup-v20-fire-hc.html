@@ -317,7 +317,7 @@
     const city = document.getElementById('city-select').value;
     const badge = document.getElementById('location-badge');
     if (!badge) return;
-    if (district && city) badge.textContent = 'District ' + district + ' › ' + city;
+    if (district && city) badge.innerHTML = 'District ' + district + ' <span style="font-size:1.4em;line-height:0;vertical-align:middle">›</span> ' + city;
     else if (district) badge.textContent = 'District ' + district;
     else badge.textContent = '';
   }
