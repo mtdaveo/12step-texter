@@ -414,12 +414,12 @@
   //   automatically by the facility form — do not add them here.
   //
   const PATIENT_FIELDS = [
-    { label: 'Facility Name',                     key: 'facility_name', type: 'text',      required: true  },
-    { label: 'Facility Contact, #, etc. (optional)',         key: 'facility_contact',  type: 'text',  required: false },
-    { label: 'Room Number',                       key: 'room_number',   type: 'number',    required: false },
-    { label: 'Patient First Name & Last Initial', key: 'patient_name',  type: 'text',      required: true  },
-    { label: 'Age',                               key: 'age',           type: 'number',    required: true  },
-    { label: 'Notes (if any)',                    key: 'notes',             type: 'multiline', required: false }
+    { label: 'Facility Name',                     		key: 'facility_name', 		type: 'text',     	required: true  },
+    { label: 'Facility Contact, #, etc. (optional)',  key: 'facility_contact',  type: 'text',  			required: false },
+    { label: 'Room Number',                       		key: 'room_number',   		type: 'number',   	required: false },
+    { label: 'Patient First Name & Last Initial', 		key: 'patient_name',  		type: 'text',     	required: true  },
+    { label: 'Age',                               		key: 'age',           		type: 'number',   	required: true  },
+    { label: 'Notes (if any)',                    		key: 'notes',             type: 'multiline', 	required: false }
   ];
 
   function labelToKey(label) { return label.toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_|_$/g, ''); }
