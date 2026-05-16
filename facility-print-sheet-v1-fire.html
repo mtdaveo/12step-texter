@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>12th Step Texter — Facility Instruction Sheet</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500&family=Source+Sans+3:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: #f5f0e8;
+    font-family: 'Source Sans 3', sans-serif;
+    font-weight: 300;
+    color: #1c1c1c;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 32px 24px;
+    gap: 16px;
+  }
+
+  .print-controls {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 8px;
+  }
+  .btn-print {
+    background: #2d5a3d;
+    color: white;
+    border: none;
+    padding: 10px 24px;
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 0.88rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    cursor: pointer;
+    border-radius: 2px;
+  }
+  .btn-print:hover { background: #245030; }
+  .btn-close {
+    background: none;
+    border: 1px solid #d8d0c0;
+    color: #7a7060;
+    padding: 10px 20px;
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 0.88rem;
+    cursor: pointer;
+    border-radius: 2px;
+  }
+
+  /* ── The sheet itself ── */
+  .sheet {
+    width: 8.5in;
+    min-height: 11in;
+    background: white;
+    border: 1px solid #d8d0c0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0.85in 0.85in 0.75in;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.10);
+  }
+
+  .sheet-header {
+    width: 100%;
+    border-bottom: 3px solid #2d5a3d;
+    padding-bottom: 18px;
+    margin-bottom: 32px;
+    text-align: center;
+  }
+  .sheet-eyebrow {
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: #7a7060;
+    margin-bottom: 8px;
+  }
+  .sheet-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem;
+    font-weight: 500;
+    color: #1c1c1c;
+    line-height: 1.2;
+    margin-bottom: 6px;
+  }
+  .sheet-location {
+    font-size: 0.88rem;
+    color: #7a7060;
+    letter-spacing: 0.06em;
+  }
+
+  .sheet-intro {
+    font-size: 1rem;
+    line-height: 1.75;
+    color: #1c1c1c;
+    text-align: center;
+    max-width: 5.5in;
+    margin-bottom: 36px;
+  }
+
+  .sheet-bullets {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 40px;
+    width: 100%;
+    max-width: 5in;
+  }
+  .sheet-bullets li {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    font-size: 0.92rem;
+    line-height: 1.5;
+    color: #1c1c1c;
+  }
+  .bullet-icon {
+    width: 22px;
+    height: 22px;
+    min-width: 22px;
+    background: #2d5a3d;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.72rem;
+    font-weight: 700;
+    margin-top: 1px;
+  }
+
+  .qr-block {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 40px;
+  }
+  .qr-label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: #7a7060;
+  }
+  .qr-image {
+    width: 3in;
+    height: 3in;
+    object-fit: contain;
+    border: 1px solid #d8d0c0;
+    padding: 12px;
+  }
+  .qr-sub {
+    font-size: 0.78rem;
+    color: #7a7060;
+    text-align: center;
+  }
+
+  .sheet-footer {
+    width: 100%;
+    border-top: 1px solid #d8d0c0;
+    padding-top: 20px;
+    margin-top: auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+  }
+  .footer-left { font-size: 0.82rem; line-height: 1.7; color: #7a7060; }
+  .footer-left strong { color: #1c1c1c; font-weight: 600; display: block; margin-bottom: 2px; }
+  .footer-right { font-size: 0.72rem; color: #a09880; text-align: right; line-height: 1.6; }
+
+  .no-qr {
+    width: 3in;
+    height: 3in;
+    border: 2px dashed #d8d0c0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.82rem;
+    color: #a09880;
+    text-align: center;
+    padding: 20px;
+  }
+
+  /* ── Print styles ── */
+  @media print {
+    body { background: white; padding: 0; }
+    .print-controls { display: none; }
+    .sheet {
+      width: 100%;
+      min-height: auto;
+      border: none;
+      box-shadow: none;
+      padding: 0.5in 0.7in 0.5in;
+    }
+  }
+</style>
+</head>
+<body>
+
+<div class="print-controls">
+  <button class="btn-print" onclick="window.print()">🖨 Print / Save as PDF</button>
+  <button class="btn-close" onclick="window.close()">Close</button>
+</div>
+
+<div class="sheet">
+
+  <div class="sheet-header">
+    <div class="sheet-eyebrow">Alcoholics Anonymous</div>
+    <div class="sheet-title">A.A. Contact Request</div>
+    <div class="sheet-location" id="sheet-location"></div>
+  </div>
+
+  <p class="sheet-intro">When a patient requests a visit from Alcoholics Anonymous, scan the QR code below to submit their information directly to local A.A. volunteers.</p>
+
+  <ul class="sheet-bullets">
+    <li>
+      <div class="bullet-icon">1</div>
+      <span><strong>Patient must personally request the visit</strong> — you will be asked to confirm this before the form submits.</span>
+    </li>
+    <li>
+      <div class="bullet-icon">2</div>
+      <span><strong>Takes less than one minute</strong> — fill in a few fields and tap Send.</span>
+    </li>
+    <li>
+      <div class="bullet-icon">3</div>
+      <span><strong>A.A. Volunteers will respond directly to your text</strong> — you'll see their replies in the thread on your phone.</span>
+    </li>
+  </ul>
+
+  <div class="qr-block">
+    <div class="qr-label">Scan to Submit a Request</div>
+    <div id="qr-container"></div>
+    <div class="qr-sub">Use your phone's camera app — no special app required</div>
+  </div>
+
+  <div class="sheet-footer">
+    <div class="footer-left">
+      <strong>Questions?</strong>
+      <span id="footer-contact">Contact your A.A. representative.</span>
+    </div>
+    <div class="footer-right">
+      12th Step Texter<br>
+      Area 40 — District 11
+    </div>
+  </div>
+
+</div>
+
+<script>
+  window.addEventListener('load', function() {
+    // Read config from sessionStorage
+    var data = {};
+    try { data = JSON.parse(sessionStorage.getItem('12step-print-sheet') || '{}'); } catch(e) {}
+
+    // Location
+    var locEl = document.getElementById('sheet-location');
+    if (data.district && data.city) locEl.textContent = 'District ' + data.district + ' — ' + data.city;
+    else if (data.city) locEl.textContent = data.city;
+
+    // QR image
+    var container = document.getElementById('qr-container');
+    if (data.qrDataUrl) {
+      var img = document.createElement('img');
+      img.src = data.qrDataUrl;
+      img.className = 'qr-image';
+      img.alt = 'QR Code';
+      container.appendChild(img);
+    } else {
+      var placeholder = document.createElement('div');
+      placeholder.className = 'no-qr';
+      placeholder.textContent = 'QR code not available. Generate QR code first in the coordinator setup.';
+      container.appendChild(placeholder);
+    }
+
+    // Footer contact
+    var footerEl = document.getElementById('footer-contact');
+    if (data.contact && data.contactPhone) {
+      footerEl.textContent = data.contact + ' · ' + data.contactPhone;
+    } else if (data.contact) {
+      footerEl.textContent = data.contact;
+    } else if (data.contactPhone) {
+      footerEl.textContent = data.contactPhone;
+    }
+  });
+</script>
+</body>
+</html>
