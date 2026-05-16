@@ -642,6 +642,7 @@
       .replace(/coordinator-setup[^/]*\.html/, 'facility-print-sheet-v1-fire.html');
     window.open(printUrl, '_blank');
   }
+  function downloadQR() {
     const qrCanvas = document.querySelector('#qr-canvas canvas');
     const qrImg = document.querySelector('#qr-canvas img');
     const dataURL = qrCanvas ? qrCanvas.toDataURL('image/png') : (qrImg ? qrImg.src : null);
