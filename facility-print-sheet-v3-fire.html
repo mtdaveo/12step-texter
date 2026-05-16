@@ -4,266 +4,306 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>12th Step Texter — Facility Instruction Sheet</title>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500&family=Source+Sans+3:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
+
   body {
     background: #f5f0e8;
-    font-family: sans-serif;
+    font-family: 'Source Sans 3', sans-serif;
+    font-weight: 300;
+    color: #1c1c1c;
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
-    min-height: 100vh;
-    gap: 20px;
-    padding: 40px 24px;
+    padding: 32px 24px;
+    gap: 16px;
   }
-  .controls {
+
+  .print-controls {
     display: flex;
     gap: 12px;
+    margin-bottom: 8px;
   }
-  .btn {
-    padding: 12px 28px;
-    font-size: 0.9rem;
+  .btn-print {
+    background: #2d5a3d;
+    color: white;
+    border: none;
+    padding: 10px 24px;
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 0.88rem;
     font-weight: 600;
     letter-spacing: 0.06em;
     text-transform: uppercase;
-    border: none;
-    border-radius: 2px;
     cursor: pointer;
+    border-radius: 2px;
   }
-  .btn-primary { background: #2d5a3d; color: white; }
-  .btn-primary:hover { background: #245030; }
-  .btn-secondary { background: none; border: 1px solid #d8d0c0; color: #7a7060; }
-  .status {
-    font-size: 0.85rem;
+  .btn-print:hover { background: #245030; }
+  .btn-close {
+    background: none;
+    border: 1px solid #d8d0c0;
+    color: #7a7060;
+    padding: 10px 20px;
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 0.88rem;
+    cursor: pointer;
+    border-radius: 2px;
+  }
+
+  /* ── The sheet itself ── */
+  .sheet {
+    width: 8.5in;
+    min-height: 11in;
+    background: white;
+    border: 1px solid #d8d0c0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0.85in 0.85in 0.75in;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.10);
+  }
+
+  .sheet-header {
+    width: 100%;
+    border-bottom: 3px solid #2d5a3d;
+    padding-bottom: 18px;
+    margin-bottom: 32px;
+    text-align: center;
+  }
+  .sheet-eyebrow {
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: #7a7060;
+    margin-bottom: 8px;
+  }
+  .sheet-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem;
+    font-weight: 500;
+    color: #1c1c1c;
+    line-height: 1.2;
+    margin-bottom: 6px;
+  }
+  .sheet-location {
+    font-size: 0.88rem;
+    color: #7a7060;
+    letter-spacing: 0.06em;
+  }
+
+  .sheet-intro {
+    font-size: 1rem;
+    line-height: 1.75;
+    color: #1c1c1c;
+    text-align: center;
+    max-width: 5.5in;
+    margin-bottom: 24px;
+  }
+
+  .sheet-bullets {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 28px;
+    width: 100%;
+    max-width: 5in;
+  }
+  .sheet-bullets li {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    font-size: 0.92rem;
+    line-height: 1.5;
+    color: #1c1c1c;
+  }
+  .bullet-icon {
+    width: 22px;
+    height: 22px;
+    min-width: 22px;
+    background: #2d5a3d;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.72rem;
+    font-weight: 700;
+    margin-top: 1px;
+  }
+
+  .sheet-contact {
+    width: 100%;
+    max-width: 5in;
+    text-align: center;
+    margin-bottom: 28px;
+    font-size: 1rem;
+    line-height: 1.7;
+    color: #1c1c1c;
+    display: flex;
+    justify-content: center;
+    align-items: baseline;
+    gap: 6px;
+  }
+  .sheet-contact strong { font-weight: 600; margin-right: 6px; }
+
+  .qr-block {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 24px;
+  }
+  .qr-label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: #7a7060;
+  }
+  .qr-image {
+    width: 2.5in;
+    height: 2.5in;
+    object-fit: contain;
+    border: 1px solid #d8d0c0;
+    padding: 10px;
+  }
+  .qr-sub {
+    font-size: 0.78rem;
     color: #7a7060;
     text-align: center;
   }
-  canvas { border: 1px solid #d8d0c0; box-shadow: 0 4px 20px rgba(0,0,0,0.1); max-width: 100%; }
-  @media print { .controls, .status { display: none; } }
+
+  .sheet-footer {
+    width: 100%;
+    border-top: 1px solid #d8d0c0;
+    padding-top: 20px;
+    margin-top: auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .footer-right { font-size: 0.72rem; color: #a09880; text-align: center; line-height: 1.6; }
+
+  .no-qr {
+    width: 3in;
+    height: 3in;
+    border: 2px dashed #d8d0c0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.82rem;
+    color: #a09880;
+    text-align: center;
+    padding: 20px;
+  }
+
+  /* ── Print styles ── */
+  @media print {
+    body { background: white; padding: 0; }
+    .print-controls { display: none; }
+    .sheet {
+      width: 100%;
+      min-height: auto;
+      border: none;
+      box-shadow: none;
+      padding: 0.5in 0.7in 0.5in;
+    }
+  }
 </style>
 </head>
 <body>
 
-<div class="controls">
-  <button class="btn btn-primary" onclick="downloadPDF()">⬇ Download PDF</button>
-  <button class="btn btn-secondary" onclick="window.close()">Close</button>
+<div class="print-controls">
+  <button class="btn-print" onclick="window.print()">🖨 Print / Save as PDF</button>
+  <button class="btn-close" onclick="window.close()">Close</button>
 </div>
-<div class="status" id="status">Generating preview...</div>
-<canvas id="preview"></canvas>
+
+<div class="sheet">
+
+  <div class="sheet-header">
+    <div class="sheet-eyebrow">Alcoholics Anonymous</div>
+    <div class="sheet-title">A.A. Contact Request</div>
+    <div class="sheet-location" id="sheet-location"></div>
+  </div>
+
+  <p class="sheet-intro">When a patient requests a visit from Alcoholics Anonymous, scan the QR code below to submit their information directly to local A.A. coordinator and volunteers.</p>
+
+  <ul class="sheet-bullets">
+    <li>
+      <div class="bullet-icon">1</div>
+      <span><strong>Patient must personally request the visit</strong> — you will be asked to confirm this before the form submits.</span>
+    </li>
+    <li>
+      <div class="bullet-icon">2</div>
+      <span><strong>Takes less than one minute</strong> — fill in a few fields and tap Send.</span>
+    </li>
+    <li>
+      <div class="bullet-icon">3</div>
+      <span><strong>A.A. Volunteers will respond directly to your text</strong> — you'll see their replies in the thread on your phone.</span>
+    </li>
+  </ul>
+
+  <div class="qr-block">
+    <div class="qr-label" id="qr-label">Scan to Submit a Request</div>
+    <div id="qr-container"></div>
+    <div class="qr-sub">Use your phone's camera app — no special app required</div>
+  </div>
+
+  <div class="sheet-contact">
+    <strong>Questions?</strong>
+    <span id="footer-contact">Contact your A.A. representative.</span>
+  </div>
+
+	<div class="sheet-footer">
+    <div class="footer-right">
+      12th Step Texter — Area 40, District 11
+    </div>
+  </div>
+
+</div>
 
 <script>
-const { jsPDF } = window.jspdf;
+  window.addEventListener('load', function() {
+    // Read config from sessionStorage
+    var data = {};
+    try { data = JSON.parse(sessionStorage.getItem('12step-print-sheet') || '{}'); } catch(e) {}
 
-// ── Read sessionStorage ──────────────────────────────────
-var data = {};
-try { data = JSON.parse(sessionStorage.getItem('12step-print-sheet') || '{}'); } catch(e) {}
+    // Location
+    var locEl = document.getElementById('sheet-location');
+    if (data.district && data.city) locEl.textContent = 'District ' + data.district + ' — ' + data.city;
+    else if (data.city) locEl.textContent = data.city;
 
-const district  = data.district || '';
-const city      = data.city || '';
-const contact   = data.contact || '';
-const phone     = data.contactPhone || '';
-const qrDataUrl = data.qrDataUrl || null;
+    // QR label with city
+    var qrLabel = document.getElementById('qr-label');
+    if (qrLabel && data.city) qrLabel.textContent = 'Scan to Submit a Request — ' + data.city + ' ONLY';
 
-// ── Build PDF ────────────────────────────────────────────
-function buildPDF(callback) {
-  const doc = new jsPDF({ orientation: 'portrait', unit: 'in', format: 'letter' });
-  const W = 8.5, H = 11;
-  const ml = 0.85, mr = 0.85, mt = 0.85;
-  const contentW = W - ml - mr;
-  let y = mt;
-
-  // ── Header ──
-  // Eyebrow
-  doc.setFont('helvetica', 'bold');
-  doc.setFontSize(7);
-  doc.setTextColor(122, 112, 96);
-  doc.text('ALCOHOLICS ANONYMOUS', W / 2, y, { align: 'center' });
-  y += 0.22;
-
-  // Title
-  doc.setFont('times', 'bold');
-  doc.setFontSize(28);
-  doc.setTextColor(28, 28, 28);
-  doc.text('A.A. Contact Request', W / 2, y, { align: 'center' });
-  y += 0.18;
-
-  // Location
-  if (district || city) {
-    doc.setFont('helvetica', 'normal');
-    doc.setFontSize(9);
-    doc.setTextColor(122, 112, 96);
-    const loc = district && city ? 'District ' + district + ' \u2014 ' + city : (city || district);
-    doc.text(loc, W / 2, y, { align: 'center' });
-    y += 0.18;
-  }
-
-  // Rule
-  doc.setDrawColor(45, 90, 61);
-  doc.setLineWidth(0.03);
-  doc.line(ml, y, W - mr, y);
-  y += 0.30;
-
-  // ── Intro ──
-  doc.setFont('helvetica', 'normal');
-  doc.setFontSize(10);
-  doc.setTextColor(28, 28, 28);
-  const introText = 'When a patient requests a visit from Alcoholics Anonymous, scan the QR code below to submit their information directly to local A.A. coordinator and volunteers.';
-  const introLines = doc.splitTextToSize(introText, contentW);
-  doc.text(introLines, W / 2, y, { align: 'center' });
-  y += introLines.length * 0.165 + 0.22;
-
-  // ── Bullets ──
-  const bullets = [
-    { num: '1', bold: 'Patient must personally request the visit', rest: ' \u2014 you will be asked to confirm this before the form submits.' },
-    { num: '2', bold: 'Takes less than one minute', rest: ' \u2014 fill in a few fields and tap Send.' },
-    { num: '3', bold: 'A.A. Volunteers will respond directly to your text', rest: ' \u2014 you\u2019ll see their replies in the thread on your phone.' }
-  ];
-
-  const circleR = 0.115;
-  const bulletX = ml + 0.05;
-  const textX = bulletX + circleR * 2 + 0.10;
-  const textW = W - mr - textX;
-
-  bullets.forEach(function(b) {
-    // Circle
-    doc.setFillColor(45, 90, 61);
-    doc.circle(bulletX + circleR, y + 0.005, circleR, 'F');
-    doc.setFont('helvetica', 'bold');
-    doc.setFontSize(7);
-    doc.setTextColor(255, 255, 255);
-    doc.text(b.num, bulletX + circleR, y + 0.01, { align: 'center', baseline: 'middle' });
-
-    // Text — bold part + normal part
-    doc.setFontSize(9.5);
-    doc.setTextColor(28, 28, 28);
-    const fullText = b.bold + b.rest;
-    const lines = doc.splitTextToSize(fullText, textW);
-
-    // First line: bold prefix + normal rest
-    const boldWidth = doc.getTextWidth(b.bold);
-    doc.setFont('helvetica', 'bold');
-    doc.text(b.bold, textX, y, { baseline: 'top' });
-    doc.setFont('helvetica', 'normal');
-
-    // Remaining lines
-    if (lines.length > 1) {
-      // first line remainder
-      const firstLineRemainder = lines[0].substring(b.bold.length);
-      if (firstLineRemainder) doc.text(firstLineRemainder, textX + boldWidth, y, { baseline: 'top' });
-      for (let i = 1; i < lines.length; i++) {
-        y += 0.155;
-        doc.text(lines[i], textX, y, { baseline: 'top' });
-      }
+    // QR image
+    var container = document.getElementById('qr-container');
+    if (data.qrDataUrl) {
+      var img = document.createElement('img');
+      img.src = data.qrDataUrl;
+      img.className = 'qr-image';
+      img.alt = 'QR Code';
+      container.appendChild(img);
     } else {
-      const remainder = fullText.substring(b.bold.length);
-      doc.text(remainder, textX + boldWidth, y, { baseline: 'top' });
+      var placeholder = document.createElement('div');
+      placeholder.className = 'no-qr';
+      placeholder.textContent = 'QR code not available. Generate QR code first in the coordinator setup.';
+      container.appendChild(placeholder);
     }
 
-    y += 0.22;
-  });
-
-  y += 0.10;
-
-  // ── QR label ──
-  doc.setFont('helvetica', 'bold');
-  doc.setFontSize(7.5);
-  doc.setTextColor(122, 112, 96);
-  const qrLabel = city ? 'SCAN TO SUBMIT A REQUEST \u2014 ' + city.toUpperCase() + ' ONLY' : 'SCAN TO SUBMIT A REQUEST';
-  doc.text(qrLabel, W / 2, y, { align: 'center' });
-  y += 0.18;
-
-  // ── QR image ──
-  const qrSize = 2.4;
-  const qrX = (W - qrSize) / 2;
-
-  function afterQR(doc, y) {
-    y += qrSize + 0.14;
-
-    // QR sub
-    doc.setFont('helvetica', 'normal');
-    doc.setFontSize(8);
-    doc.setTextColor(122, 112, 96);
-    doc.text('Use your phone\u2019s camera app \u2014 no special app required', W / 2, y, { align: 'center' });
-    y += 0.30;
-
-    // ── Contact ──
-    if (contact || phone) {
-      const contactLine = [contact, phone].filter(Boolean).join(' \u00b7 ');
-      doc.setFontSize(11);
-      doc.setTextColor(28, 28, 28);
-      doc.setFont('helvetica', 'bold');
-      doc.text('Questions? Call or text  ', W / 2, y, { align: 'center' });
-      const labelW = doc.getTextWidth('Questions? Call or text  ');
-      doc.setFont('helvetica', 'normal');
-      // center the whole line
-      const totalW = doc.getTextWidth('Questions? Call or text  ' + contactLine);
-      const startX = (W - totalW) / 2;
-      doc.setFont('helvetica', 'bold');
-      doc.text('Questions? Call or text', startX, y);
-      doc.setFont('helvetica', 'normal');
-      doc.text('  ' + contactLine, startX + doc.getTextWidth('Questions? Call or text'), y);
-      y += 0.25;
+    // Footer contact
+    var footerEl = document.getElementById('footer-contact');
+    if (data.contact && data.contactPhone) {
+      footerEl.textContent = data.contact + ' · ' + data.contactPhone;
+    } else if (data.contact) {
+      footerEl.textContent = data.contact;
+    } else if (data.contactPhone) {
+      footerEl.textContent = data.contactPhone;
     }
-
-    // ── Footer rule ──
-    const footerY = H - 0.55;
-    doc.setDrawColor(216, 208, 192);
-    doc.setLineWidth(0.01);
-    doc.line(ml, footerY, W - mr, footerY);
-
-    // Footer text
-    doc.setFont('helvetica', 'normal');
-    doc.setFontSize(7);
-    doc.setTextColor(160, 152, 128);
-    doc.text('12th Step Texter \u2014 Area 40, District 11', W / 2, footerY + 0.18, { align: 'center' });
-
-    return doc;
-  }
-
-  if (qrDataUrl) {
-    doc.addImage(qrDataUrl, 'PNG', qrX, y, qrSize, qrSize);
-    callback(afterQR(doc, y));
-  } else {
-    // Placeholder box
-    doc.setDrawColor(216, 208, 192);
-    doc.setLineWidth(0.02);
-    doc.rect(qrX, y, qrSize, qrSize);
-    doc.setFont('helvetica', 'normal');
-    doc.setFontSize(8);
-    doc.setTextColor(160, 152, 128);
-    doc.text('Generate QR code first', W / 2, y + qrSize / 2, { align: 'center' });
-    callback(afterQR(doc, y));
-  }
-}
-
-// ── Preview on canvas ────────────────────────────────────
-function renderPreview() {
-  buildPDF(function(doc) {
-    const pdfBlob = doc.output('blob');
-    document.getElementById('status').textContent = 'Ready to download.';
-    // Show as object for preview
-    const url = URL.createObjectURL(pdfBlob);
-    const existing = document.getElementById('pdf-preview');
-    if (existing) existing.remove();
-    document.getElementById('preview').remove();
-    const obj = document.createElement('iframe');
-    obj.id = 'pdf-preview';
-    obj.src = url;
-    obj.style.cssText = 'width:8.5in;height:11in;border:1px solid #d8d0c0;box-shadow:0 4px 20px rgba(0,0,0,0.1);';
-    document.body.appendChild(obj);
   });
-}
-
-function downloadPDF() {
-  buildPDF(function(doc) {
-    const filename = city ? '12step-texter-' + city.toLowerCase() + '-facility-sheet.pdf' : '12step-texter-facility-sheet.pdf';
-    doc.save(filename);
-  });
-}
-
-window.addEventListener('load', renderPreview);
 </script>
 </body>
 </html>
