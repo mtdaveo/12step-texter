@@ -103,7 +103,6 @@
   </div>
 
   <h2>How the Backend Works Now</h2>
-  <p>The previous version of this app encoded the entire volunteer list into the QR code URL — which meant every list change required a new QR code to be printed and redistributed to facilities. That problem is now solved.</p>
   <p>The app currently uses <strong>Firebase Firestore</strong> (Google's cloud database, free tier) as its config store. The coordinator saves volunteer lists and settings to Firestore, keyed by city (e.g. <code>billings</code>). The facility form fetches the current config on every load. The QR code contains only a permanent city URL — it never needs to change.</p>
   <div class="code-block">
     Coordinator saves → Firestore: configs/billings → live immediately<br>
