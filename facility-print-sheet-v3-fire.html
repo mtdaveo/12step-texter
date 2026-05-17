@@ -133,7 +133,7 @@
     margin-top: 1px;
   }
 
-  .sheet-contact {
+	.sheet-contact {
     width: 100%;
     max-width: 5in;
     text-align: center;
@@ -141,13 +141,8 @@
     font-size: 1rem;
     line-height: 1.7;
     color: #1c1c1c;
-    display: flex;
-    justify-content: center;
-    align-items: baseline;
-    gap: 6px;
   }
-  .sheet-contact strong { font-weight: 600; margin-right: 6px; }
-
+  
   .qr-block {
     display: flex;
     flex-direction: column;
@@ -251,10 +246,9 @@
     <div class="qr-sub">Use your phone's camera app — no special app required</div>
   </div>
 
-  <div class="sheet-contact">
-    <strong>Questions?</strong>
-    <span id="footer-contact">Contact your A.A. representative.</span>
-  </div>
+	<div class="sheet-contact">
+		<span id="footer-contact">Questions? Contact your A.A. representative.</span>
+	</div>
 
 	<div class="sheet-footer">
     <div class="footer-right">
@@ -295,13 +289,13 @@
     }
 
     // Footer contact
-    var footerEl = document.getElementById('footer-contact');
-    if (data.contact && data.contactPhone) {
-      footerEl.textContent = data.contact + ' · ' + data.contactPhone;
-    } else if (data.contact) {
-      footerEl.textContent = data.contact;
-    } else if (data.contactPhone) {
-      footerEl.textContent = data.contactPhone;
+		var footerEl = document.getElementById('footer-contact');
+			if (data.contact && data.contactPhone) {
+				footerEl.textContent = 'Questions? Call or text  ' + data.contact + ' · ' + data.contactPhone;
+			} else if (data.contact) {
+				footerEl.textContent = 'Questions? Call or text  ' + data.contact;
+			} else if (data.contactPhone) {
+				footerEl.textContent = 'Questions? Call or text  ' + data.contactPhone;
     }
   });
 </script>
