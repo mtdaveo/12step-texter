@@ -90,12 +90,12 @@
   .phone-row { display: flex; gap: 10px; align-items: center; animation: slideIn 0.18s ease; }
   @keyframes slideIn { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
   .phone-row .num-label { font-size: 0.72rem; font-weight: 600; color: var(--muted); width: 22px; text-align: right; flex-shrink: 0; padding-top: 2px; }
-  input[type="tel"], input[type="text"], textarea, select {
+  input[type="tel"], input[type="text"], input[type="password"], textarea, select {
     background: white; border: 1px solid var(--rule); border-radius: 2px;
     padding: 9px 13px; font-family: 'Source Sans 3', sans-serif; font-size: 0.92rem;
     font-weight: 300; color: var(--ink); transition: border-color 0.15s; width: 100%;
   }
-  input[type="tel"]:focus, input[type="text"]:focus, textarea:focus, select:focus {
+  input[type="tel"]:focus, input[type="text"]:focus, input[type="password"]:focus, textarea:focus, select:focus {
     outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(45,90,61,0.08);
   }
   .phone-fields { flex: 1; display: flex; gap: 10px; }
