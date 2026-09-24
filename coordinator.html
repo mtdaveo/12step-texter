@@ -88,6 +88,8 @@
   @media (max-width: 600px) { .location-selects { flex-direction: column; gap: 12px; } }
   .phone-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 14px; }
   .phone-row { display: flex; gap: 10px; align-items: center; animation: slideIn 0.18s ease; }
+  .phone-row.locked-row input { background: var(--paper); color: var(--muted); cursor: not-allowed; }
+  .phone-row.locked-row .btn-remove { visibility: hidden; }
   @keyframes slideIn { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
   .phone-row .num-label { font-size: 0.72rem; font-weight: 600; color: var(--muted); width: 22px; text-align: right; flex-shrink: 0; padding-top: 2px; }
   input[type="tel"], input[type="text"], input[type="password"], textarea, select {
@@ -798,6 +800,7 @@
       initLocationDropdowns(forcedLoc ? forcedLoc.district : '', forcedLoc ? forcedLoc.city : '');
       for (let i = 0; i < MIN_PHONES; i++) addPhone('men');
       for (let i = 0; i < MIN_PHONES; i++) addPhone('women');
+      syncCoordinatorToLists();
     }
   }
 
@@ -810,8 +813,13 @@
       if (!firstRow) return;
       const phoneInput = firstRow.querySelector('.phone-input');
       const labelInput = firstRow.querySelector('.label-input');
-      if (phone) phoneInput.value = phone;
-      if (name) labelInput.value = name + ' (Coordinator)';
+      firstRow.classList.add('locked-row');
+      phoneInput.readOnly = true; labelInput.readOnly = true;
+      phoneInput.tabIndex = -1; labelInput.tabIndex = -1;
+      phoneInput.placeholder = 'A.A. Contact phone';
+      labelInput.placeholder = 'Auto-filled from A.A. Contact above';
+      phoneInput.value = phone;
+      labelInput.value = name ? name + ' (Coordinator)' : '';
     });
   }
   function getPhoneList(group) {
