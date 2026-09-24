@@ -459,7 +459,7 @@
       err.textContent = 'Sign-in failed: ' + e.message;
     }
   }
-  function doLogout() { auth.signOut(); }
+  function doLogout() { auth.signOut().then(() => location.reload()); }
 
   // Sends Firebase's own password-reset email — no custom backend or
   // email service needed. Reuses the login-error element for feedback
