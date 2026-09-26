@@ -837,7 +837,7 @@
   // ── QR Code ───────────────────────────────────────────
   function buildFacilityURL() {
     const base = window.location.href.split('?')[0]
-      .replace(/sms-coordinator-setup[^/]*\.html/, 'sms-facility-form-v15-fire.html')
+      .replace(/sms-coordinator-setup[^/]*\.html/, 'sms-facility-form-v13-fire.html')
       .replace(/coordinator-setup[^/]*\.html/, 'sms-facility-form-v15-fire.html');
     const cityKey = getCityKey();
     if (cityKey) return base + '?city=' + cityKey;
