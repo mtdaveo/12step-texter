@@ -684,7 +684,8 @@
 
   // ── Build message ─────────────────────────────────────
   function buildMessage() {
-    var template = (config.template || '').trim();
+    var template = (config.template || '').trim()
+      .replace('Room: {{room_number}}', '{{room_number}}'); // form adds the 'Room: ' label itself
     var fields   = config.fields || [];
     var vals = {};
     vals['gender']  = selectedGender === 'male' ? 'Male' : 'Female';
@@ -731,8 +732,7 @@
       if (resolved.trim() === '') return null;      // token resolved to empty — strip
       return resolved;
     }).filter(function(line) { return line !== null; });
-    result = finalLines.join('\n');
-    result += '\n\n[If this text begins a new text group/thread, please delete older text group(s)/thread(s).]';
+    result = finalLines.join('\n').replace(/\s+$/, ''); // no trailing blank lines
     return result;
   }
 
@@ -782,7 +782,7 @@
     }
     var message = buildMessage();
     var isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
-    var sep      = isIOS ? ',' : ';';
+    var sep      = ',';
     var bodyChar = isIOS ? '&' : '?';
     var smsURI = 'sms:' + numbers.join(sep) + bodyChar + 'body=' + encodeURIComponent(message);
     window.location.href = smsURI;
