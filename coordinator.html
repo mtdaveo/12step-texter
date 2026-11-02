@@ -255,8 +255,8 @@
       <span class="card-chevron">▼</span>
     </div>
     <div class="card-body">
-      <p class="hint">Select the district and city this configuration covers. This appears on the facility form so staff knows which AA group they're contacting.</p>
-      <div class="location-selects">
+      <p class="hint" id="location-hint">Select the district and city this configuration covers. This appears on the facility form so staff knows which AA group they're contacting.</p>
+      <div class="location-selects" id="location-selects-row">
         <div class="loc-group">
           <span class="loc-label">District</span>
           <select id="district-select" onchange="onDistrictChange()">
@@ -520,6 +520,11 @@
       // loadConfig re-enables city-select, which would otherwise clobber this.
       document.getElementById('district-select').disabled = true;
       document.getElementById('city-select').disabled = true;
+      // Coordinators are locked to one city, shown in the Location badge —
+      // hide the dropdown row (still read behind the scenes for Save/QR/print).
+      document.getElementById('location-selects-row').style.display = 'none';
+      document.getElementById('location-hint').textContent =
+        'Your name and phone appear on the facility form and are always first on both volunteer lists.';
     }
   }
 
