@@ -916,9 +916,7 @@
       contactPhone: document.getElementById('contact-phone').value.trim()
     };
     sessionStorage.setItem('12step-print-sheet', JSON.stringify(data));
-    const printUrl = window.location.href.split('?')[0]
-      .replace(/sms-coordinator-setup[^/]*\.html/, 'facility-print-sheet-v3-fire.html')
-      .replace(/coordinator-setup[^/]*\.html/, 'facility-print-sheet-v3-fire.html');
+    const printUrl = window.location.href.split('?')[0].replace(/[^/]*$/, 'facility-print-sheet-v3-fire.html');
     window.open(printUrl, '_blank');
   }
   function downloadQR() {
