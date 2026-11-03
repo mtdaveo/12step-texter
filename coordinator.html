@@ -115,6 +115,16 @@
     transition: all 0.15s; width: 100%; text-align: left;
   }
   .btn-add:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-light); }
+  .forward-box { margin-top: 22px; padding-top: 18px; border-top: 1px solid var(--rule); }
+  .forward-box h3 { font-family: 'Source Sans 3', sans-serif; font-size: 0.78rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
+  .forward-box .hint { margin-bottom: 12px; }
+  .forward-box input[type="tel"] { width: 100%; margin-bottom: 12px; }
+  .forward-actions { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+  .btn-forward { background: var(--accent); color: white; border: none; padding: 11px 22px; font-family: 'Source Sans 3', sans-serif; font-size: 0.9rem; font-weight: 600; cursor: pointer; border-radius: 2px; }
+  .btn-forward:hover { opacity: 0.9; }
+  .forward-msg { font-size: 0.82rem; margin-top: 10px; min-height: 1em; }
+  .forward-msg.error { color: #a32020; }
+  .forward-msg.ok { color: var(--accent); }
   .col-labels { display: flex; gap: 10px; margin-bottom: 6px; padding-left: 34px; }
   .col-labels span { font-size: 0.7rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
   .col-labels .col-phone { flex: 0 0 160px; }
@@ -299,6 +309,15 @@
       </div>
       <div class="phone-list" id="men-list"></div>
       <button class="btn-add" onclick="addPhone('men')">+ Add another number</button>
+      <div class="forward-box">
+        <h3>Forward a request to this list</h3>
+        <p class="hint">If a request reached you as a one-on-one text instead of a group text, paste the facility's number below, then tap Text this list. Paste the request into the message and send. The facility's number goes first so they see the volunteers' replies.</p>
+        <input type="tel" id="forward-facility-men" placeholder="Facility's phone number" oninput="formatPhone(this)">
+        <div class="forward-actions">
+          <button type="button" class="btn-forward" onclick="forwardTextList('men')">💬 Text this list</button>
+        </div>
+        <div class="forward-msg" id="forward-msg-men"></div>
+      </div>
     </div>
   </div>
 
@@ -318,6 +337,15 @@
       </div>
       <div class="phone-list" id="women-list"></div>
       <button class="btn-add" onclick="addPhone('women')">+ Add another number</button>
+      <div class="forward-box">
+        <h3>Forward a request to this list</h3>
+        <p class="hint">If a request reached you as a one-on-one text instead of a group text, paste the facility's number below, then tap Text this list. Paste the request into the message and send. The facility's number goes first so they see the volunteers' replies.</p>
+        <input type="tel" id="forward-facility-women" placeholder="Facility's phone number" oninput="formatPhone(this)">
+        <div class="forward-actions">
+          <button type="button" class="btn-forward" onclick="forwardTextList('women')">💬 Text this list</button>
+        </div>
+        <div class="forward-msg" id="forward-msg-women"></div>
+      </div>
     </div>
   </div>
 
@@ -839,6 +867,39 @@
     status.textContent = 'Unsaved changes'; status.className = 'save-status';
   }
 
+  // ── Forward a request (coordinator safety net) ──
+  // Facility # first, then every volunteer on the list except slot 1 (the coordinator, who is sending).
+  function getForwardNumbers(group) {
+    const msg = document.getElementById('forward-msg-' + group);
+    msg.className = 'forward-msg'; msg.textContent = '';
+    const facility = document.getElementById('forward-facility-' + group).value.replace(/\D/g, '');
+    if (facility.length < 10) {
+      msg.className = 'forward-msg error';
+      msg.textContent = "Enter the facility's phone number first.";
+      return null;
+    }
+    const rows = Array.from(document.querySelectorAll(`#${group}-list .phone-row`));
+    const nums = [facility];
+    rows.forEach(row => {
+      if (row.classList.contains('locked-row')) return;
+      const d = row.querySelector('.phone-input').value.replace(/\D/g, '');
+      if (d.length >= 10 && nums.indexOf(d) === -1) nums.push(d);
+    });
+    if (nums.length < 2) {
+      msg.className = 'forward-msg error';
+      msg.textContent = 'No volunteers on this list yet.';
+      return null;
+    }
+    return nums;
+  }
+  function forwardTextList(group) {
+    const nums = getForwardNumbers(group);
+    if (!nums) return;
+    document.getElementById('forward-msg-' + group).className = 'forward-msg ok';
+    document.getElementById('forward-msg-' + group).textContent =
+      'Opening a text to the facility + ' + (nums.length - 1) + ' volunteers. Paste the request and send.';
+    window.location.href = 'sms:' + nums.join(',');
+  }
   // ── QR Code ───────────────────────────────────────────
   function buildFacilityURL() {
     const base = window.location.href.split('?')[0].replace(/[^/]*$/, 'sms-facility-form-v13-fire.html');
