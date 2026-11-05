@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SMS Format Test</title>
+<style>
+  body { font-family: -apple-system, system-ui, sans-serif; background: #f7f3ea; color: #1d1d1d; margin: 0; padding: 20px 16px; }
+  h1 { font-size: 1.3rem; margin: 0 0 6px; }
+  p { font-size: 0.95rem; line-height: 1.4; margin: 0 0 18px; }
+  a.btn { display: block; background: #2d5a3d; color: #fff; text-decoration: none; font-size: 1.15rem; font-weight: 600; padding: 18px; border-radius: 8px; margin-bottom: 8px; }
+  .code { font-family: ui-monospace, Menlo, monospace; font-size: 0.75rem; color: #555; word-break: break-all; margin: 0 0 22px; }
+</style>
+</head>
+<body>
+<h1>SMS Format Test</h1>
+<p>Each button opens a text to the same 5 dummy numbers (406-555-0101 to 0105). Tap one, check the To: line (expect 5) and the message (expect 3 lines starting with TEST and the letter), then cancel. <b>Don't send.</b></p>
+<div id="list"></div>
+<script>
+  var nums = ['4065550101','4065550102','4065550103','4065550104','4065550105'];
+  function body(letter) { return encodeURIComponent('TEST ' + letter + ' - do not send\nLine 2\nLine 3'); }
+  var formats = [
+    ['B', 'sms://open?addresses=', 'sms://open?addresses=' + nums.join(',') + '&body=' + body('B')],
+    ['C', 'sms:/open?addresses=', 'sms:/open?addresses=' + nums.join(',') + '&body=' + body('C')]
+  ];
+  var html = '';
+  formats.forEach(function(f) {
+    html += '<a class="btn" href="' + f[2] + '">' + f[0] + ' — ' + f[1] + '</a><div class="code">' + f[2] + '</div>';
+  });
+  document.getElementById('list').innerHTML = html;
+</script>
+</body>
+</html>
