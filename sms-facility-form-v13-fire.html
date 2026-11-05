@@ -784,7 +784,11 @@
     var isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
     var sep      = ',';
     var bodyChar = isIOS ? '&' : '?';
-    var smsURI = 'sms:' + numbers.join(sep) + bodyChar + 'body=' + encodeURIComponent(message);
+    // iPhones (iOS 26) read only the FIRST number from 'sms:n,n&body='.
+    // The 'sms://open?addresses=' format loads every number (tested 11/5/26).
+    var smsURI = isIOS
+      ? 'sms://open?addresses=' + numbers.join(sep) + '&body=' + encodeURIComponent(message)
+      : 'sms:' + numbers.join(sep) + bodyChar + 'body=' + encodeURIComponent(message);
     window.location.href = smsURI;
     setTimeout(function() {
       document.getElementById('form-card').style.display = 'none';
