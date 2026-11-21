@@ -898,7 +898,9 @@
     document.getElementById('forward-msg-' + group).className = 'forward-msg ok';
     document.getElementById('forward-msg-' + group).textContent =
       'Opening a text to the facility + ' + (nums.length - 1) + ' volunteers. Paste the request and send.';
-    window.location.href = 'sms:' + nums.join(',');
+    // iPhones (iOS 26) read only the FIRST number from 'sms:n,n' (found 11/5/26).
+    var isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
+    window.location.href = (isIOS ? 'sms://open?addresses=' : 'sms:') + nums.join(',');
   }
   // ── QR Code ───────────────────────────────────────────
   function buildFacilityURL() {
