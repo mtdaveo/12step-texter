@@ -275,7 +275,7 @@
         </div>
         <div class="loc-group">
           <span class="loc-label">City / Town</span>
-          <select id="city-select" disabled onchange="markUnsaved(); updateLocationBadge()">
+          <select id="city-select" disabled onchange="updateLocationBadge(); switchCityForSuperadmin()">
             <option value="">Select city...</option>
           </select>
         </div>
@@ -835,6 +835,43 @@
       for (let i = 0; i < MIN_PHONES; i++) addPhone('women');
       syncCoordinatorToLists();
     }
+  }
+
+  // ── Superadmin: switching City loads THAT city's saved lists ──
+  // Before v36, changing the City dropdown only changed the badge; the
+  // page kept showing the previous city's lists, and Save would have
+  // overwritten the newly chosen city with them.
+  async function switchCityForSuperadmin() {
+    const key = getCityKey();
+    if (!key) return;
+    const city = document.getElementById('city-select').value;
+    const status = document.getElementById('save-status');
+    status.textContent = 'Loading ' + city + '...'; status.className = 'save-status';
+    let config = null;
+    try {
+      const doc = await db.collection('configs').doc(key).get();
+      if (doc.exists) config = doc.data();
+    } catch (e) {
+      // Never leave one city's lists on screen under another city's name.
+      location.reload();
+      return;
+    }
+    const MIN_PHONES = 10;
+    document.getElementById('men-list').innerHTML = '';
+    document.getElementById('women-list').innerHTML = '';
+    menCount = 0; womenCount = 0;
+    document.getElementById('contact-name').value = config && config.contact ? config.contact : '';
+    document.getElementById('contact-phone').value = config && config.contactPhone ? config.contactPhone : '';
+    const menList = (config && config.men) || [], womenList = (config && config.women) || [];
+    menList.forEach(e => addPhone('men', e.phone, e.label));
+    womenList.forEach(e => addPhone('women', e.phone, e.label));
+    for (let i = menList.length; i < MIN_PHONES; i++) addPhone('men');
+    for (let i = womenList.length; i < MIN_PHONES; i++) addPhone('women');
+    syncCoordinatorToLists();
+    generateQR(true);
+    window.scrollTo(0, 0);
+    if (config) { status.textContent = 'Loaded ' + city; status.className = 'save-status saved'; }
+    else { status.textContent = 'No list saved yet for ' + city; status.className = 'save-status'; }
   }
 
   // ── Coordinator auto-populates slot 1 on both lists ──
